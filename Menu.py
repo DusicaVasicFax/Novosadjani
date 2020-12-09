@@ -1,18 +1,20 @@
-
-from PyQt5.QtWidgets import QApplication, QGridLayout, QWidget, QPushButton, QLabel, QDesktopWidget
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
+    QLabel
+from PyQt5.QtCore import Qt
 
 import sys
 
+from PyQt5.uic.properties import QtWidgets, QtCore, QtGui
 
 
-class Menu(QWidget) :
+class Menu(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # x,y from left top corner of the screen and width and height of screen
-        self.setGeometry(0, 0, 650, 400)
         self.setWindowTitle("Space invaders")
-        self.initUI()
+        self.setGeometry(0, 0, 1400, 900)
+        self.ui_components()
         self.center()
 
     def center(self):
@@ -21,38 +23,20 @@ class Menu(QWidget) :
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    def initUI(self):
-        # grid = QGridLayout()
-        # self.setLayout(grid)
-        #
-        # names = ['.', '.', '.', '.', '.',
-        #          '.', '.', '.', '.', '.',
-        #          '.', '.', 'New Game', '.', '.',
-        #          '.', '.', 'EXIT', '.', '.',
-        #          '.', '.', '.', '.', '.']
-        #
-        # positions = [(i, j) for i in range(5) for j in range(5)]
-        #
-        # for positions,name in zip(positions,names):
-        #     if name == '':
-        #         continue
-        #     button = QPushButton(name)
-        #     grid.addWidget(button, *positions)
-        #
-        # self.show()
+    def ui_components(self):
 
-        label = QLabel('New game',self)
+        head = QLabel("Space invaders", self)
+        head.setGeometry(550, 300, 300, 60)
 
-        # print(label.geometry().width())
-        # width = (self.geometry().width() / 2) - (label.geometry().width() /4)
-        # height = (self.geometry().height() / 2) - (label.geometry().height() /4)
-        # label.move(int(width),int(height))
-        # print(width, height)
+        # font
+        font = QFont('Times', 14)
+        font.setBold(True)
+        font.setUnderline(True)
 
-        qr = label.geometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        label.move(qr.topLeft())
+        head.setFont(font)
+
+        # setting alignment of the head
+        head.setAlignment(Qt.AlignCenter)
 
 
 
@@ -61,5 +45,6 @@ def start():
     menu = Menu()
     menu.show()
     sys.exit(app.exec_())
+
 
 start()
