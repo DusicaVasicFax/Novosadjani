@@ -38,6 +38,18 @@ class Menu(QMainWindow):
         # setting alignment of the head
         head.setAlignment(Qt.AlignCenter)
 
+        new_game = QPushButton("New game", self)
+
+        new_game.setGeometry(650, 360, 100, 50)
+
+        player1 = QPushButton("1 player", self)
+
+        player1.setGeometry(650, 420, 100, 50)
+
+        player2 = QPushButton("2 player", self)
+
+        player2.setGeometry(650, 480, 100, 50)
+
 
 
 def start():
