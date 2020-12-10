@@ -1,11 +1,25 @@
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
-    QLabel
+    QLabel, QGraphicsScene, QGraphicsView
 from PyQt5.QtCore import Qt
 
 import sys
 
 from PyQt5.uic.properties import QtWidgets, QtCore, QtGui
+
+SCREEN_WIDTH = 1400
+SCREEN_HEIGHT = 900
+
+class Game(QGraphicsScene):
+    def __init__(self, parent=None):
+        QGraphicsScene.__init__(self, parent=parent)
+        self.view = QGraphicsView(self)
+        self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.view.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.view.show()
+
+
 
 
 class Menu(QMainWindow):
@@ -14,6 +28,7 @@ class Menu(QMainWindow):
 
         self.setWindowTitle("Space invaders")
         self.setGeometry(0, 0, 1400, 900)
+        self.setStyleSheet("background-image:url(images/background/space_bg.jpg);")
         self.ui_components()
         self.center()
 
@@ -38,17 +53,17 @@ class Menu(QMainWindow):
         # setting alignment of the head
         head.setAlignment(Qt.AlignCenter)
 
-        new_game = QPushButton("New game", self)
+        self.new_game = QPushButton("New game", self)
+        self.new_game.setStyleSheet('QPushButton {background-color: #ffffff; color: black; border: none}')
 
-        new_game.setGeometry(650, 360, 100, 50)
+        self.new_game.setGeometry(650, 360, 100, 50)
 
-        player1 = QPushButton("1 player", self)
+        self.new_game.clicked.connect(self.on_new_game_clicked)
 
-        player1.setGeometry(650, 420, 100, 50)
-
-        player2 = QPushButton("2 player", self)
-
-        player2.setGeometry(650, 480, 100, 50)
+    def on_new_game_clicked(self):
+        # print("RADIIII")
+        view = Game()
+        self.hide()
 
 
 
