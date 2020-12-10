@@ -2,22 +2,13 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
     QLabel, QGraphicsScene, QGraphicsView
 from PyQt5.QtCore import Qt
-
+from Player import Player
 import sys
 
 from PyQt5.uic.properties import QtWidgets, QtCore, QtGui
 
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 900
-
-class Game(QGraphicsScene):
-    def __init__(self, parent=None):
-        QGraphicsScene.__init__(self, parent=parent)
-        self.view = QGraphicsView(self)
-        self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.view.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.view.show()
 
 
 
@@ -65,6 +56,19 @@ class Menu(QMainWindow):
         view = Game()
         self.hide()
 
+class Game(QGraphicsScene):
+    def __init__(self, parent=None):
+        QGraphicsScene.__init__(self, parent=parent)
+        self.player = Player()
+        self.player.setPos((SCREEN_WIDTH - self.player.pixmap().width()) / 2,
+                           (SCREEN_HEIGHT - self.player.pixmap().height()) / 2)
+
+        self.addItem(self.player)
+        self.view = QGraphicsView(self)
+        self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.view.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.view.show()
 
 
 def start():
