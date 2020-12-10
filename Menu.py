@@ -2,6 +2,8 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
     QLabel, QGraphicsScene, QGraphicsView
 from PyQt5.QtCore import Qt
+from Novosadjani.Enemy.Enemy import Enemy
+from Novosadjani.Enemy.EnemyGraphics import EnemyGraphics
 
 import sys
 
@@ -10,16 +12,21 @@ from PyQt5.uic.properties import QtWidgets, QtCore, QtGui
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 900
 
+
 class Game(QGraphicsScene):
+
     def __init__(self, parent=None):
         QGraphicsScene.__init__(self, parent=parent)
+
+        self.enemy = Enemy()
+        self.enemy.setPos(100, 100)
+
+        self.addItem(self.enemy)
         self.view = QGraphicsView(self)
         self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.view.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.view.show()
-
-
+        self.view.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT)
 
 
 class Menu(QMainWindow):
@@ -52,7 +59,6 @@ class Menu(QMainWindow):
 
         # setting alignment of the head
         head.setAlignment(Qt.AlignCenter)
-
         self.new_game = QPushButton("New game", self)
         self.new_game.setStyleSheet('QPushButton {background-color: #ffffff; color: black; border: none}')
 
