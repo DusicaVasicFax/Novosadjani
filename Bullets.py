@@ -13,11 +13,6 @@ BULLET_FRAMES = 50
 FRAME_TIME_MS = 16  # ms/frame
 
 
-class Player(QGraphicsPixmapItem):
-    def __init__(self, parent=None):
-        QGraphicsPixmapItem.__init__(self, parent)
-        self.setPixmap(QPixmap("images/ship/ship_55x55.png"))
-
 class Bullet(QGraphicsPixmapItem):
     def __init__(self, offset_x, offset_y, parent = None):
         QGraphicsPixmapItem.__init__(self, parent)
