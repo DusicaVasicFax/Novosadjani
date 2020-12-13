@@ -19,11 +19,6 @@ class Game(QGraphicsScene):
         self.timer = QBasicTimer()
         self.timer.start(FRAME_TIME_MS, self)
 
-        bg = QGraphicsRectItem()
-        bg.setRect(-1, -1, SCREEN_WIDTH + 2, SCREEN_HEIGHT + 2)
-        bg.setBrush(QBrush(Qt.black))
-        self.addItem(bg)
-
         # ADDING THE PLAYER (Current support is for only one player)
         self.player = Player()
         self.player.setPos((SCREEN_WIDTH - self.player.pixmap().width()) / 2,
