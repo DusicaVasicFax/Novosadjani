@@ -6,7 +6,7 @@ from Bullets import Bullet
 
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 900
-PLAYER_BULLET_X_OFFSETS = [0.45]
+PLAYER_BULLET_X_OFFSETS = [0, 20]
 PLAYER_BULLET_Y = 15
 FRAME_TIME_MS = 16  # TODO change this later
 
@@ -21,7 +21,7 @@ class Game(QGraphicsScene):
 
         bg = QGraphicsRectItem()
         bg.setRect(-1, -1, SCREEN_WIDTH + 2, SCREEN_HEIGHT + 2)
-        bg.setBrush(QBrush(Qt.blue))
+        bg.setBrush(QBrush(Qt.black))
         self.addItem(bg)
 
         # ADDING THE PLAYER (Current support is for only one player)
