@@ -37,7 +37,7 @@ class Menu(QMainWindow):
         head.setAlignment(Qt.AlignCenter)
 
         self.new_game = QPushButton("New game", self)
-        self.new_game.setStyleSheet('QPushButton {background-color: #ffffff; color: black; border: none}')
+        self.new_game.setStyleSheet("background-color: #ffffff; color: black; border: none")
         self.new_game.setGeometry(650, 360, 100, 50)
         self.new_game.clicked.connect(self.on_new_game_clicked)
 
