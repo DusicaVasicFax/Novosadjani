@@ -2,13 +2,10 @@ from PyQt5.QtGui import QFont, QBrush
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
     QLabel, QGraphicsScene, QGraphicsView, QGraphicsRectItem
 from PyQt5.QtCore import Qt, QBasicTimer
-from Novosadjani.Enemy.Enemy import Enemy
-from Novosadjani.Enemy.EnemyGenerator import EnemyGenerator
-from Novosadjani.Enemy.EnemyGraphics import EnemyGraphics
+from Enemy.Enemy import Enemy
+from Enemy.EnemyGenerator import EnemyGenerator
 
 import sys
-
-from PyQt5.uic.properties import QtWidgets, QtCore, QtGui
 
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 900
@@ -23,15 +20,10 @@ class Game(QGraphicsScene):
         self.timer = QBasicTimer()
         self.timer.start(FRAME_TIME_MS, self)
 
-        bg = QGraphicsRectItem()
-        bg.setRect(-1, -1, SCREEN_WIDTH + 2, SCREEN_HEIGHT + 2)
-        bg.setBrush(QBrush(Qt.black))
-        self.addItem(bg)
-
         for i in range(10):
             self.enemy = Enemy()
-            self.enemy.setPos((SCREEN_WIDTH-self.enemy.pixmap().width())/5+i*90,
-                              (SCREEN_HEIGHT-self.enemy.pixmap().height())/2)
+            self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
+                              (SCREEN_HEIGHT - self.enemy.pixmap().height()) / 2)
             self.enemy.alien1()
             self.addItem(self.enemy)
 
@@ -39,7 +31,7 @@ class Game(QGraphicsScene):
             for i in range(10):
                 self.enemy = Enemy()
                 self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
-                                 (SCREEN_HEIGHT+200 - self.enemy.pixmap().height()) / 2+j*80)
+                                  (SCREEN_HEIGHT + 200 - self.enemy.pixmap().height()) / 2 + j * 80)
                 self.enemy.alien2()
                 self.addItem(self.enemy)
 
@@ -47,7 +39,7 @@ class Game(QGraphicsScene):
             for i in range(10):
                 self.enemy = Enemy()
                 self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
-                                 (SCREEN_HEIGHT+500 - self.enemy.pixmap().height()) / 2+j*80)
+                                  (SCREEN_HEIGHT + 500 - self.enemy.pixmap().height()) / 2 + j * 80)
                 self.enemy.alien3()
                 self.addItem(self.enemy)
 
@@ -76,7 +68,6 @@ class Menu(QMainWindow):
         self.move(qr.topLeft())
 
     def ui_components(self):
-
         head = QLabel("Space invaders", self)
         head.setGeometry(550, 300, 300, 60)
 
@@ -100,7 +91,6 @@ class Menu(QMainWindow):
         # print("RADIIII")
         view = Game()
         self.hide()
-
 
 
 def start():

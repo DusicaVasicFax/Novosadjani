@@ -1,4 +1,4 @@
-from Novosadjani.Enemy.Enemy import Enemy
+from Enemy.Enemy import Enemy
 
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 900
@@ -9,8 +9,8 @@ class EnemyGenerator:
     def __init__(self):
         for i in range(10):
             self.enemy = Enemy()
-            self.enemy.setPos((SCREEN_WIDTH-self.enemy.pixmap().width())/5+i*90,
-                              (SCREEN_HEIGHT-self.enemy.pixmap().height())/2)
+            self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
+                              (SCREEN_HEIGHT - self.enemy.pixmap().height()) / 2)
             self.enemy.alien1()
             self.addItem(self.enemy)
 
@@ -18,7 +18,7 @@ class EnemyGenerator:
             for i in range(10):
                 self.enemy = Enemy()
                 self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
-                                 (SCREEN_HEIGHT+200 - self.enemy.pixmap().height()) / 2+j*80)
+                                  (SCREEN_HEIGHT + 200 - self.enemy.pixmap().height()) / 2 + j * 80)
                 self.enemy.alien2()
                 self.addItem(self.enemy)
 
@@ -26,6 +26,6 @@ class EnemyGenerator:
             for i in range(10):
                 self.enemy = Enemy()
                 self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
-                                 (SCREEN_HEIGHT+500 - self.enemy.pixmap().height()) / 2+j*80)
+                                  (SCREEN_HEIGHT + 500 - self.enemy.pixmap().height()) / 2 + j * 80)
                 self.enemy.alien3()
                 self.addItem(self.enemy)
