@@ -1,8 +1,9 @@
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QBrush
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, \
-    QLabel, QGraphicsScene, QGraphicsView
-from PyQt5.QtCore import Qt
+    QLabel, QGraphicsScene, QGraphicsView, QGraphicsRectItem
+from PyQt5.QtCore import Qt, QBasicTimer
 from Novosadjani.Enemy.Enemy import Enemy
+from Novosadjani.Enemy.EnemyGenerator import EnemyGenerator
 from Novosadjani.Enemy.EnemyGraphics import EnemyGraphics
 
 import sys
@@ -11,22 +12,51 @@ from PyQt5.uic.properties import QtWidgets, QtCore, QtGui
 
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 900
+FRAME_TIME_MS = 16
 
 
 class Game(QGraphicsScene):
 
     def __init__(self, parent=None):
-        QGraphicsScene.__init__(self, parent=parent)
+        QGraphicsScene.__init__(self, parent)
 
-        self.enemy = Enemy()
-        self.enemy.setPos(100, 100)
+        self.timer = QBasicTimer()
+        self.timer.start(FRAME_TIME_MS, self)
 
-        self.addItem(self.enemy)
+        bg = QGraphicsRectItem()
+        bg.setRect(-1, -1, SCREEN_WIDTH + 2, SCREEN_HEIGHT + 2)
+        bg.setBrush(QBrush(Qt.black))
+        self.addItem(bg)
+
+        for i in range(10):
+            self.enemy = Enemy()
+            self.enemy.setPos((SCREEN_WIDTH-self.enemy.pixmap().width())/5+i*90,
+                              (SCREEN_HEIGHT-self.enemy.pixmap().height())/2)
+            self.enemy.alien1()
+            self.addItem(self.enemy)
+
+        for j in range(2):
+            for i in range(10):
+                self.enemy = Enemy()
+                self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
+                                 (SCREEN_HEIGHT+200 - self.enemy.pixmap().height()) / 2+j*80)
+                self.enemy.alien2()
+                self.addItem(self.enemy)
+
+        for j in range(2):
+            for i in range(10):
+                self.enemy = Enemy()
+                self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
+                                 (SCREEN_HEIGHT+500 - self.enemy.pixmap().height()) / 2+j*80)
+                self.enemy.alien3()
+                self.addItem(self.enemy)
+
         self.view = QGraphicsView(self)
         self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.view.show()
         self.view.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.setSceneRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 
 
 class Menu(QMainWindow):
