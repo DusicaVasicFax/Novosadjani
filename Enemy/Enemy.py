@@ -22,22 +22,21 @@ class Enemy(QGraphicsPixmapItem):
 
         if self.moves == 25:
             self.direction *= -1
-            self.moves += 1
+            self.inc_moves()
 
         if self.direction < 0:
             self.setY(self.y() + self.pixmap().height())
-            if self.direction == -1:
-                self.direction = 2
-            else:
-                self.direction = 1
-            return
+            self.direction = 2 if self.direction == -1 else 1
 
         if self.moves > 50:
             self.moves = 0
 
         if self.direction == 1:
             self.setX(self.x() + PLAYER_SPEED)
-            self.moves += 1
+            self.inc_moves()
         else:
             self.setX(self.x() - PLAYER_SPEED)
-            self.moves += 1
+            self.inc_moves()
+
+    def inc_moves(self):
+        self.moves += 1
