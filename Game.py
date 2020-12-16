@@ -1,15 +1,10 @@
 from PyQt5.QtCore import Qt, QBasicTimer
-from PyQt5.QtGui import QBrush
-from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QGraphicsRectItem
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView
+
+from Constants import *
 from Player import Player
 from Bullets import Bullet
 from Enemy.Enemy import Enemy
-
-SCREEN_WIDTH = 1400
-SCREEN_HEIGHT = 900
-PLAYER_BULLET_X_OFFSETS = [-15, 15]
-PLAYER_BULLET_Y = 15
-FRAME_TIME_MS = 16  # TODO change this later
 
 
 class Game(QGraphicsScene):
@@ -33,29 +28,20 @@ class Game(QGraphicsScene):
             self.addItem(b)
 
         self.addItem(self.player)
-
-        for i in range(10):
-            self.enemy = Enemy()
-            self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
-                              (SCREEN_HEIGHT - self.enemy.pixmap().height()) / 2)
-            self.enemy.alien1()
-            self.addItem(self.enemy)
-
-        for j in range(2):
+        enemies = []
+        for j in range(3):
             for i in range(10):
                 self.enemy = Enemy()
+                if j == 0:
+                    self.enemy.alien1()
+                elif j == 1:
+                    self.enemy.alien2()
+                else:
+                    self.enemy.alien3()
                 self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
-                                  (SCREEN_HEIGHT + 200 - self.enemy.pixmap().height()) / 2 + j * 80)
-                self.enemy.alien2()
+                                  ((j + 1) * self.enemy.pixmap().height()) + 20 * j)
                 self.addItem(self.enemy)
-
-        for j in range(2):
-            for i in range(10):
-                self.enemy = Enemy()
-                self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
-                                  (SCREEN_HEIGHT + 500 - self.enemy.pixmap().height()) / 2 + j * 80)
-                self.enemy.alien3()
-                self.addItem(self.enemy)
+                enemies.append(self.enemy)
 
         self.view = QGraphicsView(self)
         self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

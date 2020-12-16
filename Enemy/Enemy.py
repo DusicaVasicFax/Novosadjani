@@ -1,9 +1,7 @@
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QLabel, QVBoxLayout, QGraphicsPixmapItem
 from PyQt5.QtCore import Qt
-
-ENEMY_SPEED = 3   # pix/frame
-ENEMY_BULLET_X_OFFSETS = [0,45]
+from Constants import *
 
 
 class Enemy(QGraphicsPixmapItem):
@@ -31,4 +29,3 @@ class Enemy(QGraphicsPixmapItem):
         if Qt.Key_Down in keys_pressed:
             dy += ENEMY_SPEED
         self.setPos(self.x() + dx, self.y() + dy)
-

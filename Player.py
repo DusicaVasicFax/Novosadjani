@@ -1,12 +1,7 @@
 from PyQt5.QtCore import Qt
-
 from PyQt5.QtGui import QPixmap
-
 from PyQt5.QtWidgets import QGraphicsPixmapItem
-
-PLAYER_SPEED = 10
-SCREEN_WIDTH = 1400
-SCREEN_HEIGHT = 900
+from Constants import *
 
 
 class Player(QGraphicsPixmapItem):
