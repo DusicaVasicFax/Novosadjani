@@ -12,13 +12,15 @@ class Game(QGraphicsScene):
         QGraphicsScene.__init__(self, parent=parent)
 
         self.keys_pressed = set()
-        self.timer = QBasicTimer()
-        self.timer.start(FRAME_TIME_MS, self)
+        self.player_timer = QBasicTimer()
+        self.enemy_timer = QBasicTimer()
+        self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
+        self.enemy_timer.start(FRAME_TIME_ENEMY_MS, self)
 
         # ADDING THE PLAYER (Current support is for only one player)
         self.player = Player()
         self.player.setPos((SCREEN_WIDTH - self.player.pixmap().width()) / 2,
-                           (SCREEN_HEIGHT - self.player.pixmap().height()) / 2)
+                           SCREEN_HEIGHT - self.player.pixmap().height())
 
         self.bullets = [Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y),
                         Bullet(PLAYER_BULLET_X_OFFSETS[1], PLAYER_BULLET_Y)]
@@ -58,6 +60,8 @@ class Game(QGraphicsScene):
         self.keys_pressed.remove(event.key())
 
     def timerEvent(self, event):
+        if event.timerId() == self.enemy_timer.timerId():
+            self.enemy_game_update()
         self.game_update()
         self.update()
 
@@ -65,6 +69,8 @@ class Game(QGraphicsScene):
         self.player.game_update(self.keys_pressed)
         for b in self.bullets:
             b.game_update(self.keys_pressed, self.player)
+        # call every enemy check if it's hit or not
+
+    def enemy_game_update(self):
         for i in range(len(self.enemies)):
             self.enemies[i].game_update()
-

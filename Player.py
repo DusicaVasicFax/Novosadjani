@@ -16,8 +16,8 @@ class Player(QGraphicsPixmapItem):
             dx -= PLAYER_SPEED
         if Qt.Key_Right in keys_pressed and self.x() + PLAYER_SPEED < SCREEN_WIDTH - self.pixmap().width():
             dx += PLAYER_SPEED
-        if Qt.Key_Up in keys_pressed and self.y() - PLAYER_SPEED > 0:
-            dy -= PLAYER_SPEED
-        if Qt.Key_Down in keys_pressed and self.y() + PLAYER_SPEED < SCREEN_HEIGHT - self.pixmap().height():
-            dy += PLAYER_SPEED
+        # if Qt.Key_Up in keys_pressed and self.y() - PLAYER_SPEED > 0:
+        #     dy -= PLAYER_SPEED
+        # if Qt.Key_Down in keys_pressed and self.y() + PLAYER_SPEED < SCREEN_HEIGHT - self.pixmap().height():
+        #     dy += PLAYER_SPEED
         self.setPos(self.x() + dx, self.y() + dy)
