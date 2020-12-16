@@ -1,14 +1,9 @@
-from PyQt5.QtCore import Qt, QBasicTimer
+from PyQt5.QtCore import Qt
 
-from PyQt5.QtGui import QPixmap, QBrush
+from PyQt5.QtGui import QPixmap
 
-from PyQt5.QtWidgets import QGraphicsPixmapItem, QGraphicsScene, QGraphicsRectItem, QGraphicsView, QApplication
-
-SCREEN_WIDTH = 1400
-SCREEN_HEIGHT = 900
-BULLET_SPEED = 100  # pix/frame
-BULLET_FRAMES = 20
-FRAME_TIME_MS = 100  # ms/frame
+from PyQt5.QtWidgets import QGraphicsPixmapItem
+from Constants import *
 
 
 class Bullet(QGraphicsPixmapItem):
@@ -22,7 +17,7 @@ class Bullet(QGraphicsPixmapItem):
 
     def game_update(self, keys_pressed, player):
         if not self.active:
-            if Qt.Key_Space in keys_pressed and BULLET_SPEED < SCREEN_HEIGHT - self.pixmap().height() :
+            if Qt.Key_Space in keys_pressed and BULLET_SPEED < SCREEN_HEIGHT - self.pixmap().height():
                 self.active = True
                 self.setPos(player.x() + self.offset_x, player.y() + self.offset_y)
                 self.frames = BULLET_FRAMES

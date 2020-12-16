@@ -28,7 +28,7 @@ class Game(QGraphicsScene):
             self.addItem(b)
 
         self.addItem(self.player)
-        enemies = []
+        self.enemies = []
         for j in range(3):
             for i in range(10):
                 self.enemy = Enemy()
@@ -41,7 +41,7 @@ class Game(QGraphicsScene):
                 self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
                                   ((j + 1) * self.enemy.pixmap().height()) + 20 * j)
                 self.addItem(self.enemy)
-                enemies.append(self.enemy)
+                self.enemies.append(self.enemy)
 
         self.view = QGraphicsView(self)
         self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -65,3 +65,6 @@ class Game(QGraphicsScene):
         self.player.game_update(self.keys_pressed)
         for b in self.bullets:
             b.game_update(self.keys_pressed, self.player)
+        for i in range(len(self.enemies)):
+            self.enemies[i].game_update()
+

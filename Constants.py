@@ -7,3 +7,5 @@ FRAME_TIME_MS = 16  # TODO change this later
 ENEMY_SPEED = 3  # pix/frame
 ENEMY_BULLET_X_OFFSETS = [0, 45]
 PLAYER_SPEED = 10
+BULLET_FRAMES = 20
+BULLET_SPEED = 100  # pix/frame
