@@ -5,6 +5,7 @@ from Constants import *
 from Player import Player
 from Bullets import Bullet
 from Enemy.Enemy import Enemy
+from Shield.Shield import Shield
 
 
 class Game(QGraphicsScene):
@@ -44,6 +45,24 @@ class Game(QGraphicsScene):
                                   ((j + 1) * self.enemy.pixmap().height()) + 20 * j)
                 self.addItem(self.enemy)
                 self.enemies.append(self.enemy)
+
+        self.shields = []
+        for i in range(3):
+            self.shield = Shield()
+            if i == 0:
+                self.shield.fullshield()
+                self.shield.setPos((SCREEN_WIDTH - self.shield.pixmap().width()) / 5 - 70 + i * 90,
+                                  (self.shield.pixmap().height()) + 20 + 500)
+            elif i == 1:
+                self.shield.fullshield()
+                self.shield.setPos((SCREEN_WIDTH - self.shield.pixmap().width()) / 5 - 70 + i * 90+400,
+                                   (self.shield.pixmap().height()) + 20 + 500)
+            else:
+                self.shield.fullshield()
+                self.shield.setPos((SCREEN_WIDTH - self.shield.pixmap().width()) / 5 -70 + i * 90 + 800,
+                                   (self.shield.pixmap().height()) + 20 + 500)
+            self.addItem(self.shield)
+            self.shields.append(self.shield)
 
         self.view = QGraphicsView(self)
         self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
