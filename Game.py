@@ -31,12 +31,12 @@ class Game(QGraphicsScene):
 
         self.addItem(self.player)
         self.enemies = []
-        for j in range(3):
+        for j in range(5):
             for i in range(10):
                 self.enemy = Enemy()
                 if j == 0:
                     self.enemy.alien1()
-                elif j == 1:
+                elif 0 < j <= 2:
                     self.enemy.alien2()
                 else:
                     self.enemy.alien3()
