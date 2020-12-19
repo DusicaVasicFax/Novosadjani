@@ -24,21 +24,25 @@ class Menu(QMainWindow):
 
     def ui_components(self):
         head = QLabel("Space invaders", self)
-        head.setGeometry(550, 300, 300, 60)
+        head.setGeometry(430, 10, 500, 60)
+        head.setStyleSheet("color: gray")
 
         # font
-        font = QFont('Times', 14)
+        font = QFont('Times', 25)
         font.setBold(True)
-        font.setUnderline(True)
+        font.setUnderline(False)
 
         head.setFont(font)
 
         # setting alignment of the head
         head.setAlignment(Qt.AlignCenter)
-        self.new_game = QPushButton("New game", self)
-        self.new_game.setStyleSheet("background-color: #ffffff; color: white; border: none")
-        self.new_game.setGeometry(650, 360, 100, 50)
-        self.new_game.clicked.connect(self.on_new_game_clicked)
+        new_game = QPushButton("New game", self)
+        # self.new_game.setStyleSheet("background-color: #ffffff; color: white; border: one")
+        new_game.setStyleSheet(
+            'QPushButton''{''background-color : black; color: orange}')
+        new_game.setFont(QFont('Times', 14))
+        new_game.setGeometry(570, 250, 220, 100)
+        new_game.clicked.connect(self.on_new_game_clicked)
 
     def on_new_game_clicked(self):
         Game()
