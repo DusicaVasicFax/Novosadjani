@@ -12,7 +12,7 @@ class Menu(QMainWindow):
 
         self.setWindowTitle("Space invaders")
         self.setGeometry(0, 0, 1400, 900)
-        self.setStyleSheet("background-image:url(images/background/space_bg.jpg);")
+        self.setStyleSheet("background-image:url(images/background/aaa.jpg);")
         self.ui_components()
         self.center()
 
@@ -36,7 +36,7 @@ class Menu(QMainWindow):
         # setting alignment of the head
         head.setAlignment(Qt.AlignCenter)
         self.new_game = QPushButton("New game", self)
-        self.new_game.setStyleSheet("background-color: #ffffff; color: black; border: none")
+        self.new_game.setStyleSheet("background-color: #ffffff; color: white; border: none")
         self.new_game.setGeometry(650, 360, 100, 50)
         self.new_game.clicked.connect(self.on_new_game_clicked)
 
