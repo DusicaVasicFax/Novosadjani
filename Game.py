@@ -20,17 +20,10 @@ class Game(QGraphicsScene):
 
         # ADDING THE PLAYER (Current support is for only one player)
         self.player = Player()
-        # self.player.setPos((SCREEN_WIDTH - self.player.pixmap().width()) / 2,
-        #                    SCREEN_HEIGHT - self.player.pixmap().height())
-
-        self.bullets = [Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y),
-                        Bullet(PLAYER_BULLET_X_OFFSETS[1], PLAYER_BULLET_Y)]
-
-        for b in self.bullets:
-            b.setPos(SCREEN_WIDTH, SCREEN_HEIGHT)
-            self.addItem(b)
-
         self.addItem(self.player)
+        self.addItem(Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y))
+        self.addItem(Bullet(PLAYER_BULLET_X_OFFSETS[1], PLAYER_BULLET_Y))
+
         self.enemies = []
         for j in range(5):
             for i in range(10):
