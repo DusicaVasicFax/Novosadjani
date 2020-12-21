@@ -8,6 +8,7 @@ class Player(QGraphicsPixmapItem):
     def __init__(self, parent=None):
         QGraphicsPixmapItem.__init__(self, parent)
         self.setPixmap(QPixmap("images/ship/ship_55x55.png"))
+        self.setPos((SCREEN_WIDTH - self.pixmap().width()) / 2, SCREEN_HEIGHT - self.pixmap().height())
 
     def game_update(self, keys_pressed):
         dx = 0
