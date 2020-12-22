@@ -40,18 +40,9 @@ class Game(QGraphicsScene):
                 self.enemies.append(enemy)
 
         self.shields = []
-        # TODO refactor this, you don't need a for loop for this :)
+
         for i in range(3):
             shield = Shield(i)
-            # if i == 0:
-            #     self.shield.setPos((SCREEN_WIDTH - self.shield.pixmap().width()) / 5 - 70 + i * 90,
-            #                        (self.shield.pixmap().height()) + 20 + 500)
-            # elif i == 1:
-            #     self.shield.setPos((SCREEN_WIDTH - self.shield.pixmap().width()) / 5 - 70 + i * 90 + 400,
-            #                        (self.shield.pixmap().height()) + 20 + 500)
-            # else:
-            #     self.shield.setPos((SCREEN_WIDTH - self.shield.pixmap().width()) / 5 - 70 + i * 90 + 800,
-            #                        (self.shield.pixmap().height()) + 20 + 500)
             self.addItem(shield)
             self.shields.append(shield)
 
@@ -62,9 +53,6 @@ class Game(QGraphicsScene):
         self.view.setStyleSheet("background-color: black;")
         self.view.show()
         self.setSceneRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        print("shield1 ", self.shields[0].x(), " ", self.shields[0].y())
-        print("shield2 ", self.shields[1].x(), " ", self.shields[1].y())
-        print("shield3 ", self.shields[2].x(), " ", self.shields[2].y())
 
     def keyPressEvent(self, event):
         self.keys_pressed.add(event.key())
@@ -85,14 +73,12 @@ class Game(QGraphicsScene):
             b.game_update(self.keys_pressed, self.player)
             shields = []
             for shield in self.shields:
-                if shield.check_if_shield_is_hit(b.x(), b.x() + 20, b.y()):
-                    b.hit()
+                shield.check_if_shield_is_hit(b)
                 if not shield.check_if_shield_is_destroyed():
                     shields.append(shield)
                 else:
                     self.removeItem(shield)
             self.shields = shields
-        # call every enemy check if it's hit or not
 
     def enemy_game_update(self):
         for i in range(len(self.enemies)):

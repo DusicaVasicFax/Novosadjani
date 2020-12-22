@@ -21,10 +21,11 @@ class Shield(QGraphicsPixmapItem):
     def check_if_shield_is_destroyed(self) -> bool:
         return self.health <= 0
 
-    def check_if_shield_is_hit(self, x, x1, y) -> bool:
-        x_coordinate_in_range = (self.x() <= x <= self.x() + self.pixmap().width() - 35) or \
-                                (self.x() <= x1 <= self.x() + self.pixmap().width() - 35)
-        hit = x_coordinate_in_range and self.y() <= y <= self.y() + self.pixmap().height() - 35
+    def check_if_shield_is_hit(self, bullet) -> None:
+        x_coordinate_in_range = (self.x() <= bullet.x() <= self.x() + self.pixmap().width() - 35) or \
+                                (self.x() <= bullet.x() + 20 <= self.x() + self.pixmap().width() - 35)
+        hit = x_coordinate_in_range and self.y() <= bullet.y() <= self.y() + self.pixmap().height() - 35
+        # TODO dependent on the health state change the image of the shield
         if hit:
+            bullet.hit()
             self.health -= 1
-        return hit
