@@ -24,7 +24,12 @@ class Shield(QGraphicsPixmapItem):
     def check_if_shield_is_hit(self, bullet) -> None:
         x_coordinate_in_range = (self.x() <= bullet.x() <= self.x() + self.pixmap().width() - 35) or \
                                 (self.x() <= bullet.x() + 20 <= self.x() + self.pixmap().width() - 35)
-        hit = x_coordinate_in_range and self.y() <= bullet.y() <= self.y() + self.pixmap().height() - 35
+        y_coordinate_in_range = (self.y() <= bullet.y() <= self.y() + self.pixmap().height() - 35) or \
+                                (self.y() <= bullet.y() + bullet.pixmap().height() <=
+                                 self.y() + self.pixmap().height() - 35)
+
+        # TODO figure out the magic number for the bullet.y() since i guess bullet.pixmap().height is not accurate
+        hit = x_coordinate_in_range and y_coordinate_in_range
         # TODO dependent on the health state change the image of the shield
         if hit:
             bullet.hit()
