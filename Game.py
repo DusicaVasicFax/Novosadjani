@@ -2,8 +2,8 @@ from PyQt5.QtCore import Qt, QBasicTimer
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView
 
 from Constants import *
-from Player import Player
-from Bullets import Bullet
+from Player.Player import Player
+from Bullet.Bullets import Bullet
 from Enemy.Enemy import Enemy
 from Shield.Shield import Shield
 
@@ -20,49 +20,31 @@ class Game(QGraphicsScene):
 
         # ADDING THE PLAYER (Current support is for only one player)
         self.player = Player()
-        self.player.setPos((SCREEN_WIDTH - self.player.pixmap().width()) / 2,
-                           SCREEN_HEIGHT - self.player.pixmap().height())
-
+        self.addItem(self.player)
         self.bullets = [Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y),
                         Bullet(PLAYER_BULLET_X_OFFSETS[1], PLAYER_BULLET_Y)]
+        self.addItem(self.bullets[0])
+        self.addItem(self.bullets[1])
 
-        for b in self.bullets:
-            b.setPos(SCREEN_WIDTH, SCREEN_HEIGHT)
-            self.addItem(b)
-
-        self.addItem(self.player)
         self.enemies = []
         for j in range(5):
             for i in range(10):
-                self.enemy = Enemy()
+                enemy = None
                 if j == 0:
-                    self.enemy.alien1()
+                    enemy = Enemy(i, j, '1')
                 elif 0 < j <= 2:
-                    self.enemy.alien2()
+                    enemy = Enemy(i, j, '2')
                 else:
-                    self.enemy.alien3()
-                self.enemy.setPos((SCREEN_WIDTH - self.enemy.pixmap().width()) / 5 + i * 90,
-                                  ((j + 1) * self.enemy.pixmap().height()) + 20 * j)
-                self.addItem(self.enemy)
-                self.enemies.append(self.enemy)
+                    enemy = Enemy(i, j, '3')
+                self.addItem(enemy)
+                self.enemies.append(enemy)
 
         self.shields = []
+
         for i in range(3):
-            self.shield = Shield()
-            if i == 0:
-                self.shield.fullshield()
-                self.shield.setPos((SCREEN_WIDTH - self.shield.pixmap().width()) / 5 - 70 + i * 90,
-                                  (self.shield.pixmap().height()) + 20 + 500)
-            elif i == 1:
-                self.shield.fullshield()
-                self.shield.setPos((SCREEN_WIDTH - self.shield.pixmap().width()) / 5 - 70 + i * 90+400,
-                                   (self.shield.pixmap().height()) + 20 + 500)
-            else:
-                self.shield.fullshield()
-                self.shield.setPos((SCREEN_WIDTH - self.shield.pixmap().width()) / 5 -70 + i * 90 + 800,
-                                   (self.shield.pixmap().height()) + 20 + 500)
-            self.addItem(self.shield)
-            self.shields.append(self.shield)
+            shield = Shield(i)
+            self.addItem(shield)
+            self.shields.append(shield)
 
         self.view = QGraphicsView(self)
         self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -86,9 +68,17 @@ class Game(QGraphicsScene):
 
     def game_update(self):
         self.player.game_update(self.keys_pressed)
+
         for b in self.bullets:
             b.game_update(self.keys_pressed, self.player)
-        # call every enemy check if it's hit or not
+            shields = []
+            for shield in self.shields:
+                shield.check_if_shield_is_hit(b)
+                if not shield.check_if_shield_is_destroyed():
+                    shields.append(shield)
+                else:
+                    self.removeItem(shield)
+            self.shields = shields
 
     def enemy_game_update(self):
         for i in range(len(self.enemies)):

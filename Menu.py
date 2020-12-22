@@ -46,7 +46,7 @@ class Menu(QMainWindow):
 
     def on_new_game_clicked(self):
         Game()
-        self.hide()
+        # self.hide()
 
 
 def start():
