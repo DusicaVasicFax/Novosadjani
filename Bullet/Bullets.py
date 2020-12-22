@@ -14,6 +14,7 @@ class Bullet(QGraphicsPixmapItem):
         self.offset_y = offset_y
         self.active = False
         self.frames = 0
+        self.setPos(SCREEN_WIDTH, SCREEN_HEIGHT)
 
     def game_update(self, keys_pressed, player):
         if not self.active:
@@ -27,3 +28,8 @@ class Bullet(QGraphicsPixmapItem):
             if self.frames <= 0:
                 self.active = False
                 self.setPos(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+    def hit(self) -> None:
+        self.active = False
+        self.frames = BULLET_FRAMES
+        self.setPos(SCREEN_WIDTH, SCREEN_HEIGHT)
