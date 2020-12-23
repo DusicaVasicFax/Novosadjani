@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, QBasicTimer
-from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QPushButton
 
 from Constants import *
 from Player.Player import Player

@@ -7,5 +7,5 @@ FRAME_TIME_ENEMY_MS = 150
 ENEMY_SPEED = 1  # pix/frame
 ENEMY_BULLET_X_OFFSETS = [0, 45]
 PLAYER_SPEED = 10
-BULLET_FRAMES = 60
+BULLET_FRAMES = 900  #Whole screen was 60 only for faster check up
 BULLET_SPEED = 2  # pix/frame
