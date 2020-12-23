@@ -16,6 +16,7 @@ class Enemy(QGraphicsPixmapItem):
         self.setPos(self.calculate_start_position_x(x), self.calculate_start_position_y(y))
         self.moves = 0
         self.direction = 1
+        self.health = 1
 
     def calculate_start_position_x(self, i) -> float:
         return (SCREEN_WIDTH - self.pixmap().width()) / 5 + i * 90
@@ -59,3 +60,21 @@ class Enemy(QGraphicsPixmapItem):
 
     def inc_moves(self) -> None:
         self.moves += 1
+
+    def check_if_enemy_is_hit(self, bullet) -> bool:
+        x_coordinate_in_range = (self.x() <= bullet.x() <= self.x() + self.pixmap().width() - 35) or \
+                                (self.x() <= bullet.x() + 20 <= self.x() + self.pixmap().width() - 35)
+        y_coordinate_in_range = (self.y() <= bullet.y() <= self.y() + self.pixmap().height() - 35) or \
+                                (self.y() <= bullet.y() + bullet.pixmap().height() <=
+                                 self.y() + self.pixmap().height() - 35)
+
+        # TODO figure out the magic number for the bullet.y() since i guess bullet.pixmap().height is not accurate
+        hit = x_coordinate_in_range and y_coordinate_in_range
+
+        if hit:
+            bullet.hit()
+            self.health -= 1
+
+        return self.health == 0
+
+

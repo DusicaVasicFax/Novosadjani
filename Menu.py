@@ -9,7 +9,7 @@ from Game import Game
 class Menu(QMainWindow):
     def __init__(self):
         super().__init__()
-
+        self.game = None
         self.setWindowTitle("Space invaders")
         self.setGeometry(0, 0, 1400, 900)
         self.setStyleSheet("background-image:url(images/background/aaa.jpg);")
@@ -44,10 +44,10 @@ class Menu(QMainWindow):
         new_game.setGeometry(570, 250, 220, 100)
         new_game.clicked.connect(self.on_new_game_clicked)
 
-    def on_new_game_clicked(self):
-        Game()
-        # self.hide()
 
+    def on_new_game_clicked(self):
+        self.game = Game()
+        #self.hide()
 
 def start():
     app = QApplication(sys.argv)

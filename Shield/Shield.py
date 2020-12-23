@@ -7,7 +7,7 @@ from Constants import *
 class Shield(QGraphicsPixmapItem):
     def __init__(self, i, parent=None):
         QGraphicsPixmapItem.__init__(self, parent)
-        self.setPixmap(QPixmap("images/shield/shield_132x132.png"))
+        self.setPixmap(QPixmap("images/shield/shield_108x132_cut.png"))
         self.setPos(self.calculate_start_position_x(i), self.calculate_start_position_y())
         self.active = True,
         self.health = 6
@@ -30,7 +30,12 @@ class Shield(QGraphicsPixmapItem):
 
         # TODO figure out the magic number for the bullet.y() since i guess bullet.pixmap().height is not accurate
         hit = x_coordinate_in_range and y_coordinate_in_range
-        # TODO dependent on the health state change the image of the shield
+
         if hit:
             bullet.hit()
             self.health -= 1
+            if self.health == 4:
+                self.setPixmap(QPixmap("images/shield/shield_108x132_cut_damage_left.png"))
+            elif self.health == 2:
+                self.setPixmap(QPixmap("images/shield/shield_108x132_cut_damage_both.png"))
+

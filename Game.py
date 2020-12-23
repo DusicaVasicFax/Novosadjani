@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, QBasicTimer
-from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QPushButton
 
 from Constants import *
 from Player.Player import Player
@@ -68,18 +68,30 @@ class Game(QGraphicsScene):
 
     def game_update(self):
         self.player.game_update(self.keys_pressed)
-
         for b in self.bullets:
             b.game_update(self.keys_pressed, self.player)
             shields = []
+
             for shield in self.shields:
                 shield.check_if_shield_is_hit(b)
                 if not shield.check_if_shield_is_destroyed():
                     shields.append(shield)
                 else:
                     self.removeItem(shield)
+
+                for enemy in self.enemies:
+                    if (enemy.y() + enemy.pixmap().height()) > (shield.y()-10):
+                        self.enemy_timer.stop()
             self.shields = shields
 
     def enemy_game_update(self):
-        for i in range(len(self.enemies)):
-            self.enemies[i].game_update()
+        for b in self.bullets:
+            enemies = []
+            b.game_update(self.keys_pressed, self.player)
+            for enemy in self.enemies:
+                enemy.game_update()
+                if not enemy.check_if_enemy_is_hit(b):
+                    enemies.append(enemy)
+                else:
+                    self.removeItem(enemy)
+            self.enemies = enemies
