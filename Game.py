@@ -6,6 +6,7 @@ from Player.Player import Player
 from Bullet.Bullets import Bullet
 from Enemy.Enemy import Enemy
 from Shield.Shield import Shield
+from Life.Life import Life
 
 
 class Game(QGraphicsScene):
@@ -41,10 +42,16 @@ class Game(QGraphicsScene):
 
         self.shields = []
 
+        # ADD SHIELDS
         for i in range(3):
             shield = Shield(i)
             self.addItem(shield)
             self.shields.append(shield)
+
+        # ADD LIFE
+        for i in range(3):
+            life = Life(i)
+            self.addItem(life)
 
         self.view = QGraphicsView(self)
         self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
