@@ -6,6 +6,7 @@ from Player.Player import Player
 from Bullet.Bullets import Bullet
 from Enemy.Enemy import Enemy
 from Shield.Shield import Shield
+from Score.Score import Score
 
 
 class Game(QGraphicsScene):
@@ -45,6 +46,10 @@ class Game(QGraphicsScene):
             shield = Shield(i)
             self.addItem(shield)
             self.shields.append(shield)
+
+        # ADD SCORE
+        score = Score()
+        self.addItem(score)
 
         self.view = QGraphicsView(self)
         self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
