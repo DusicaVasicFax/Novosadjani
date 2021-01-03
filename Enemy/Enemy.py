@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QRect
+
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QGraphicsPixmapItem, QLabel
+from PyQt5.QtWidgets import QLabel
 from Constants import *
 
 
@@ -27,10 +27,10 @@ class Enemy(QLabel):
         self.direction = 1
         self.health = 1
 
-    def calculate_start_position_x(self, i) -> float:
+    def calculate_start_position_x(self, i) -> int:
         return (SCREEN_WIDTH - self.width()) / 5 + i * 90
 
-    def calculate_start_position_y(self, j) -> float:
+    def calculate_start_position_y(self, j) -> int:
         return ((j + 1) * self.height()) + 30 * j
 
     def game_update(self):
