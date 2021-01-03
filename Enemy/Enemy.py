@@ -9,14 +9,20 @@ class Enemy(QLabel):
         QLabel.__init__(self, parent)
 
         if j == 0:
-            self.setPixmap(QPixmap("images/aliens/alien_1.png"))
+            self.setPixmap(QPixmap("images/aliens/alien_1_1.png"))
+            self.type = 1
+            self.image = 1
         elif 0 < j <= 2:
-            self.setPixmap(QPixmap("images/aliens/alien_2.png"))
+            self.setPixmap(QPixmap("images/aliens/alien_2_1.png"))
+            self.type = 2
+            self.image = 1
         else:
-            self.setPixmap(QPixmap("images/aliens/alien_3.png"))
+            self.setPixmap(QPixmap("images/aliens/alien_3_1.png"))
+            self.type = 3
+            self.image = 1
         self.setGeometry(self.calculate_start_position_x(i), self.calculate_start_position_y(j), self.pixmap().width(),
                          self.pixmap().height())
-        self.setStyleSheet("border: 1px solid white;")
+        # self.setStyleSheet("border: 1px solid white;")
         self.moves = 0
         self.direction = 1
         self.health = 1
@@ -28,6 +34,8 @@ class Enemy(QLabel):
         return ((j + 1) * self.height()) + 30 * j
 
     def game_update(self):
+
+        self.change_image()
         if self.moves == 25:
             self.change_direction()
             self.inc_moves()
@@ -44,6 +52,35 @@ class Enemy(QLabel):
         else:
             self.move_left()
 
+    def change_image(self) -> None:
+        if self.type == 1:
+            if self.image == 1:
+                self.setPixmap(QPixmap("images/aliens/alien_1_2.png"))
+                self.setGeometry(self.x(), self.y(), self.pixmap().width(), self.pixmap().height())
+                self.image = 2
+            else:
+                self.setPixmap(QPixmap("images/aliens/alien_1_1.png"))
+                self.setGeometry(self.x(), self.y(), self.pixmap().width(), self.pixmap().height())
+                self.image = 1
+        elif self.type == 2:
+            if self.image == 1:
+                self.setPixmap(QPixmap("images/aliens/alien_2_2.png"))
+                self.setGeometry(self.x(), self.y(), self.pixmap().width(), self.pixmap().height())
+                self.image = 2
+            else:
+                self.setPixmap(QPixmap("images/aliens/alien_2_1.png"))
+                self.setGeometry(self.x(), self.y(), self.pixmap().width(), self.pixmap().height())
+                self.image = 1
+        else:
+            if self.image == 1:
+                self.setPixmap(QPixmap("images/aliens/alien_3_2.png"))
+                self.setGeometry(self.x(), self.y(), self.pixmap().width(), self.pixmap().height())
+                self.image = 2
+            else:
+                self.setPixmap(QPixmap("images/aliens/alien_3_1.png"))
+                self.setGeometry(self.x(), self.y(), self.pixmap().width(), self.pixmap().height())
+                self.image = 1
+
     def move_right(self) -> None:
         self.setGeometry(self.x() + PLAYER_SPEED, self.y(), self.width(), self.height())
         self.inc_moves()
@@ -53,7 +90,12 @@ class Enemy(QLabel):
         self.inc_moves()
 
     def move_down(self) -> None:
-        self.setGeometry(self.x(), self.y() + self.height(), self.width(), self.height())
+        if self.type == 1:
+            self.setGeometry(self.x(), self.y() + self.height(), self.width(), self.height())
+        elif self.type == 2:
+            self.setGeometry(self.x(), self.y() + self.height() + 10, self.width(), self.height())
+        else:
+            self.setGeometry(self.x(), self.y() + self.height() + 15, self.width(), self.height())
 
     def change_direction(self, down=False) -> None:
         if down:
@@ -80,4 +122,7 @@ class Enemy(QLabel):
             bullet.hit()
             self.health -= 1
 
-        return self.health == 0
+        if self.health == 0:
+            self.close()
+            return True
+        return False

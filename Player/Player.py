@@ -7,10 +7,10 @@ from Constants import *
 class Player(QLabel):
     def __init__(self, parent):
         QLabel.__init__(self, parent)
-        self.setPixmap(QPixmap("images/ship/ship_55x55.png"))
+        self.setPixmap(QPixmap("images/ship/ship.png"))
         self.setGeometry((SCREEN_WIDTH - self.pixmap().width()) / 2, SCREEN_HEIGHT - self.pixmap().height(),
                          self.pixmap().width(), self.pixmap().height())
-        self.setStyleSheet("border: 1px solid white;")
+        # self.setStyleSheet("border: 1px solid white;")
         self.show()
 
     def game_update(self, keys_pressed):

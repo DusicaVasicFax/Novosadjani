@@ -1,5 +1,5 @@
-from PyQt5.QtCore import Qt, QBasicTimer, pyqtSignal
-from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QPushButton, QWidget
+from PyQt5.QtCore import QBasicTimer, pyqtSignal
+from PyQt5.QtWidgets import QWidget
 
 from Constants import *
 from Player.Player import Player
@@ -26,11 +26,10 @@ class Game(QWidget):
 
         self.player = Player(self)
 
-        self.shields = []
-
+        #   TODO maybe bullets should spawn when you press space?
         self.bullets = [Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y, self)]
-        # Bullet(PLAYER_BULLET_X_OFFSETS[1], PLAYER_BULLET_Y, self)]
 
+        self.shields = []
         for i in range(3):
             self.shields.append(Shield(i, self))
 
@@ -49,19 +48,25 @@ class Game(QWidget):
         self.keys_pressed.remove(event.key())
 
     def timerEvent(self, event):
-        # if event.timerId() == self.enemy_timer.timerId():
-        # self.enemy_game_update()
+        if event.timerId() == self.enemy_timer.timerId():
+            self.enemy_game_update()
         self.game_update()
 
-    # self.update()
     def game_update(self):
         self.player.game_update(self.keys_pressed)
-        for b in self.bullets:
-            b.game_update(self.keys_pressed, self.player)
-        for shield in self.shields:
-            shield.check_if_shield_is_hit(b)
-            if shield.check_if_shield_is_destroyed():
-                self.shields.remove(shield)
+        for bullet in self.bullets:
+            bullet.game_update(self.keys_pressed, self.player)
+            for enemy in self.enemies:
+                if enemy.check_if_enemy_is_hit(bullet):
+                    self.enemies.remove(enemy)
+
+            for shield in self.shields:
+                if shield.check_if_shield_is_destroyed(bullet):
+                    self.shields.remove(shield)
+
+    def enemy_game_update(self):
+        for enemy in self.enemies:
+            enemy.game_update()
 
     # def game_update(self):
     #     self.player.game_update(self.keys_pressed)
@@ -81,14 +86,3 @@ class Game(QWidget):
     #                     self.enemy_timer.stop()
     #         self.shields = shields
     #
-    # def enemy_game_update(self):
-    #     for b in self.bullets:
-    #         enemies = []
-    #         b.game_update(self.keys_pressed, self.player)
-    #         for enemy in self.enemies:
-    #             enemy.game_update()
-    #             if not enemy.check_if_enemy_is_hit(b):
-    #                 enemies.append(enemy)
-    #             else:
-    #                 self.removeItem(enemy)
-    #         self.enemies = enemies
