@@ -2,6 +2,7 @@ from PyQt5.QtCore import QBasicTimer, pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
 from Constants import *
+from Life.Life import Life
 from Player.Player import Player
 from Bullet.Bullets import Bullet
 from Enemy.Enemy import Enemy
@@ -37,6 +38,10 @@ class Game(QWidget):
         for j in range(5):
             for i in range(10):
                 self.enemies.append(Enemy(i, j, self))
+
+        self.lives = []
+        for i in range(3):
+            self.lives.append(Life(i, self))
 
     def closeEvent(self, event):
         self.closeGame.emit()
