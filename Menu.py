@@ -15,6 +15,7 @@ class Menu(QMainWindow):
         self.setStyleSheet("background-image:url(images/background/aaa.jpg);")
         self.ui_components()
         self.center()
+        self.show()
 
     def center(self):
         qr = self.frameGeometry()
@@ -37,22 +38,22 @@ class Menu(QMainWindow):
         # setting alignment of the head
         head.setAlignment(Qt.AlignCenter)
         new_game = QPushButton("New game", self)
-        # self.new_game.setStyleSheet("background-color: #ffffff; color: white; border: one")
         new_game.setStyleSheet(
             'QPushButton''{''background-color : black; color: orange}')
         new_game.setFont(QFont('Times', 14))
         new_game.setGeometry(570, 250, 220, 100)
         new_game.clicked.connect(self.on_new_game_clicked)
 
-
     def on_new_game_clicked(self):
+        self.hide()
         self.game = Game()
-        #self.hide()
+        self.game.closeGame.connect(self.show)
+        self.game.show()
+
 
 def start():
     app = QApplication(sys.argv)
     menu = Menu()
-    menu.show()
     sys.exit(app.exec_())
 
 

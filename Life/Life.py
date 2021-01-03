@@ -1,14 +1,15 @@
-from PyQt5.QtGui import QPixmap, QPen, QColor
-from PyQt5.QtWidgets import QGraphicsPixmapItem
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QLabel
 
 from Constants import *
 
 
-class Life(QGraphicsPixmapItem):
-    def __init__(self, i, parent=None):
-        QGraphicsPixmapItem.__init__(self, parent)
-        self.setPixmap(QPixmap("images/heart/cesr.png"))
-        self.setPos(self.calculate_start_position_x(i), self.calculate_start_position_y())
+class Life(QLabel):
+    def __init__(self, i, parent):
+        QLabel.__init__(self, parent)
+        self.setPixmap(QPixmap("images/heart/heart.png"))
+        self.setGeometry(self.calculate_start_position_x(i), self.calculate_start_position_y(), self.pixmap().width(),
+                         self.pixmap().height())
 
     def calculate_start_position_x(self, x) -> float:
         return SCREEN_WIDTH - 1240 - (x * 50) - self.pixmap().width()

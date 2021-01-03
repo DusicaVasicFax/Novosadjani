@@ -1,65 +1,50 @@
-from PyQt5.QtCore import Qt, QBasicTimer
-from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QPushButton
+from PyQt5.QtCore import QBasicTimer, pyqtSignal
+from PyQt5.QtWidgets import QWidget
 
 from Constants import *
+from Life.Life import Life
 from Player.Player import Player
 from Bullet.Bullets import Bullet
 from Enemy.Enemy import Enemy
 from Shield.Shield import Shield
-from Life.Life import Life
 
 
-class Game(QGraphicsScene):
+class Game(QWidget):
+    closeGame = pyqtSignal()
+
     def __init__(self, parent=None):
-        QGraphicsScene.__init__(self, parent=parent)
-
+        QWidget.__init__(self, parent=parent)
+        self.__init__ui()
         self.keys_pressed = set()
         self.player_timer = QBasicTimer()
         self.enemy_timer = QBasicTimer()
         self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
         self.enemy_timer.start(FRAME_TIME_ENEMY_MS, self)
 
-        # ADDING THE PLAYER (Current support is for only one player)
-        self.player = Player()
-        self.addItem(self.player)
-        self.bullets = [Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y),
-                        Bullet(PLAYER_BULLET_X_OFFSETS[1], PLAYER_BULLET_Y)]
-        self.addItem(self.bullets[0])
-        self.addItem(self.bullets[1])
+    def __init__ui(self):
+        self.resize(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.setStyleSheet("background-color: black;")
+
+        self.player = Player(self)
+
+        #   TODO maybe bullets should spawn when you press space?
+        self.bullets = [Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y, self)]
+
+        self.shields = []
+        for i in range(3):
+            self.shields.append(Shield(i, self))
 
         self.enemies = []
         for j in range(5):
             for i in range(10):
-                enemy = None
-                if j == 0:
-                    enemy = Enemy(i, j, '1')
-                elif 0 < j <= 2:
-                    enemy = Enemy(i, j, '2')
-                else:
-                    enemy = Enemy(i, j, '3')
-                self.addItem(enemy)
-                self.enemies.append(enemy)
+                self.enemies.append(Enemy(i, j, self))
 
-        self.shields = []
-
-        # ADD SHIELDS
+        self.lives = []
         for i in range(3):
-            shield = Shield(i)
-            self.addItem(shield)
-            self.shields.append(shield)
+            self.lives.append(Life(i, self))
 
-        # ADD LIFE
-        for i in range(3):
-            life = Life(i)
-            self.addItem(life)
-
-        self.view = QGraphicsView(self)
-        self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.view.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.view.setStyleSheet("background-color: black;")
-        self.view.show()
-        self.setSceneRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+    def closeEvent(self, event):
+        self.closeGame.emit()
 
     def keyPressEvent(self, event):
         self.keys_pressed.add(event.key())
@@ -71,34 +56,38 @@ class Game(QGraphicsScene):
         if event.timerId() == self.enemy_timer.timerId():
             self.enemy_game_update()
         self.game_update()
-        self.update()
 
     def game_update(self):
         self.player.game_update(self.keys_pressed)
-        for b in self.bullets:
-            b.game_update(self.keys_pressed, self.player)
-            shields = []
+        for bullet in self.bullets:
+            bullet.game_update(self.keys_pressed, self.player)
+            for enemy in self.enemies:
+                if enemy.check_if_enemy_is_hit(bullet):
+                    self.enemies.remove(enemy)
 
             for shield in self.shields:
-                shield.check_if_shield_is_hit(b)
-                if not shield.check_if_shield_is_destroyed():
-                    shields.append(shield)
-                else:
-                    self.removeItem(shield)
-
-                for enemy in self.enemies:
-                    if (enemy.y() + enemy.pixmap().height()) > (shield.y()-10):
-                        self.enemy_timer.stop()
-            self.shields = shields
+                if shield.check_if_shield_is_destroyed(bullet):
+                    self.shields.remove(shield)
 
     def enemy_game_update(self):
-        for b in self.bullets:
-            enemies = []
-            b.game_update(self.keys_pressed, self.player)
-            for enemy in self.enemies:
-                enemy.game_update()
-                if not enemy.check_if_enemy_is_hit(b):
-                    enemies.append(enemy)
-                else:
-                    self.removeItem(enemy)
-            self.enemies = enemies
+        for enemy in self.enemies:
+            enemy.game_update()
+
+    # def game_update(self):
+    #     self.player.game_update(self.keys_pressed)
+    #     for b in self.bullets:
+    #         b.game_update(self.keys_pressed, self.player)
+    #         shields = []
+    #
+    #         for shield in self.shields:
+    #             shield.check_if_shield_is_hit(b)
+    #             if not shield.check_if_shield_is_destroyed():
+    #                 shields.append(shield)
+    #             else:
+    #                 self.removeItem(shield)
+    #
+    #             for enemy in self.enemies:
+    #                 if (enemy.y() + enemy.pixmap().height()) > (shield.y()-10):
+    #                     self.enemy_timer.stop()
+    #         self.shields = shields
+    #
