@@ -14,4 +14,5 @@ class Score(QLabel):
 
     def increment_results(self):
         self.score += 1
+        self.setText("Score: " + str(self.score))
         return self.score
