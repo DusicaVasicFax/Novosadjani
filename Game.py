@@ -69,6 +69,7 @@ class Game(QWidget):
             for enemy in self.enemies:
                 if enemy.check_if_enemy_is_hit(bullet):
                     self.enemies.remove(enemy)
+                    self.score.print_results()
 
             for shield in self.shields:
                 if shield.check_if_shield_is_destroyed(bullet):

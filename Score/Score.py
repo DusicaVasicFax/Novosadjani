@@ -12,5 +12,4 @@ class Score(QLabel):
 
     def print_results(self):
         self.score += 1
-        text = ('''<p>{}</p>'''.format(self.score))
-        return text
+        self.setText("Score: " + str(self.score))
