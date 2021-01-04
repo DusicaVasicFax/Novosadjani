@@ -6,6 +6,7 @@ from Life.Life import Life
 from Player.Player import Player
 from Bullet.Bullets import Bullet
 from Enemy.Enemy import Enemy
+from Score.Score import Score
 from Shield.Shield import Shield
 
 
@@ -42,6 +43,10 @@ class Game(QWidget):
         self.lives = []
         for i in range(3):
             self.lives.append(Life(i, self))
+
+        # ADD SCORE
+        self.score = Score(self)
+
 
     def closeEvent(self, event):
         self.closeGame.emit()
