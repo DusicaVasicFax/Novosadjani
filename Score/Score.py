@@ -7,12 +7,11 @@ class Score(QLabel):
     def __init__(self, parent):
         QLabel.__init__(self, parent)
         self.score = 0
-        self.setText("Score: 0")
+        self.setText("Score: " + str(self.score))
         self.setGeometry(SCREEN_WIDTH - 100, 5, 100, 20)
         self.setFont(QFont('Times', 12))
         self.setStyleSheet("color: orange")
 
-    def print_results(self):
+    def increment_results(self):
         self.score += 1
-        text = ('''<p>{}</p>'''.format(self.score))
-        return text
+        return self.score
