@@ -54,14 +54,14 @@ class Game(QWidget):
 
     def start_game(self) -> None:
         self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
-        num = choice([*range(0, len(self.enemies), 1)])
-
-        self.enemies[0].bullet = Bullet(50, 50, self, True)
-        self.enemies[0].bullet.active = True
-        self.enemies[0].bullet.enemy_game_update(self.enemies[0])
-        print('test')
-        # self.move_enemy.move_signal.connect(self.enemy_game_update)
-        # self.move_enemy.start()
+        # num = choice([*range(0, len(self.enemies), 1)])
+        #
+        # self.enemies[0].bullet = Bullet(50, 50, self, True)
+        # self.enemies[0].bullet.active = True
+        # self.enemies[0].bullet.enemy_game_update(self.enemies[0])
+        # print('test')
+        self.move_enemy.move_signal.connect(self.enemy_game_update)
+        self.move_enemy.start()
 
     def closeEvent(self, event):
         self.closeGame.emit()
@@ -87,14 +87,17 @@ class Game(QWidget):
             for shield in self.shields:
                 if shield.check_if_shield_is_destroyed(bullet):
                     self.shields.remove(shield)
-        temp = self.enemies[0]
-        if temp.bullet and temp.bullet.enemy_game_update(temp):
-            temp.bullet = None
+
+        for enemy in self.enemies:
+            if enemy.bullet and enemy.bullet.enemy_game_update(enemy):
+                self.enemy_bullets.remove(enemy.bullet)
+                enemy.bullet = None
 
     def enemy_game_update(self):
         if not self.enemy_bullets:
             num = choice([*range(0, len(self.enemies), 1)])
-            self.enemies[0].bullet = Bullet(50, 50, self)
+            self.enemies[num].bullet = Bullet(50, 50, self, True)
+            self.enemy_bullets.append(self.enemies[num].bullet)
 
         for enemy in self.enemies:
             enemy.game_update()

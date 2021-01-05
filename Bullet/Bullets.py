@@ -17,7 +17,7 @@ class Bullet(QLabel):
         self.offset_y = offset_y
         self.active = False
         self.setGeometry(SCREEN_WIDTH, SCREEN_HEIGHT, self.pixmap().width(), self.pixmap().height())
-        self.setStyleSheet("border: 1px solid white;")
+        # self.setStyleSheet("border: 1px solid white;")
         self.show()
         self.enemy = enemy
 
