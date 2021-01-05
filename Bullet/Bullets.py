@@ -33,7 +33,7 @@ class Bullet(QLabel):
             if self.y() + self.pixmap().height() <= 0:
                 self.hit()
 
-    def enemy_game_update(self, enemy):
+    def enemy_game_update(self, enemy) -> bool:
         if not self.active:
             x = enemy.x() + enemy.width() / 2 - self.width() / 2
             y = enemy.y() + enemy.height()
@@ -41,8 +41,11 @@ class Bullet(QLabel):
             self.active = True
         else:
             self.setGeometry(self.x(), self.y() + BULLET_SPEED, self.pixmap().width(), self.pixmap().height())
+
             if self.y() >= SCREEN_HEIGHT:
                 self.hit()
+                return True
+            return False
 
     def hit(self) -> None:
         self.active = False

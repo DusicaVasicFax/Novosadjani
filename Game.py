@@ -87,7 +87,9 @@ class Game(QWidget):
             for shield in self.shields:
                 if shield.check_if_shield_is_destroyed(bullet):
                     self.shields.remove(shield)
-        self.enemies[0].bullet.enemy_game_update(self.enemies[0])
+        temp = self.enemies[0]
+        if temp.bullet and temp.bullet.enemy_game_update(temp):
+            temp.bullet = None
 
     def enemy_game_update(self):
         if not self.enemy_bullets:
