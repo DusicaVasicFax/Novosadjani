@@ -1,12 +1,14 @@
 from PyQt5.QtCore import QBasicTimer, pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
+from random import seed
+from random import choice
+from Bullet.Bullets import Bullet
 from Constants import *
+from Enemy.Enemy import Enemy
 from Enemy.move_enemy import MoveEnemy
 from Life.Life import Life
 from Player.Player import Player
-from Bullet.Bullets import Bullet
-from Enemy.Enemy import Enemy
 from Score.Score import Score
 from Shield.Shield import Shield
 
@@ -43,14 +45,23 @@ class Game(QWidget):
         for i in range(3):
             self.lives.append(Life(i, self))
 
+        # ENEMY_BULLETS
+        self.enemy_bullets = []
+
         # ADD SCORE
         self.score = Score(self)
         self.start_game()
 
     def start_game(self) -> None:
         self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
-        self.move_enemy.move_signal.connect(self.enemy_game_update)
-        self.move_enemy.start()
+        num = choice([*range(0, len(self.enemies), 1)])
+
+        self.enemies[0].bullet = Bullet(50, 50, self, True)
+        self.enemies[0].bullet.active = True
+        self.enemies[0].bullet.enemy_game_update(self.enemies[0])
+        print('test')
+        # self.move_enemy.move_signal.connect(self.enemy_game_update)
+        # self.move_enemy.start()
 
     def closeEvent(self, event):
         self.closeGame.emit()
@@ -67,7 +78,7 @@ class Game(QWidget):
     def game_update(self):
         self.player.game_update(self.keys_pressed)
         for bullet in self.bullets:
-            bullet.game_update(self.keys_pressed, self.player)
+            bullet.player_game_update(self.keys_pressed, self.player)
             for enemy in self.enemies:
                 if enemy.check_if_enemy_is_hit(bullet):
                     self.enemies.remove(enemy)
@@ -76,8 +87,12 @@ class Game(QWidget):
             for shield in self.shields:
                 if shield.check_if_shield_is_destroyed(bullet):
                     self.shields.remove(shield)
+        self.enemies[0].bullet.enemy_game_update(self.enemies[0])
 
     def enemy_game_update(self):
+        if not self.enemy_bullets:
+            num = choice([*range(0, len(self.enemies), 1)])
+            self.enemies[0].bullet = Bullet(50, 50, self)
+
         for enemy in self.enemies:
             enemy.game_update()
-
