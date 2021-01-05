@@ -73,11 +73,11 @@ class Game(QWidget):
                     if enemy.type == 3:
                         self.enemies.remove(enemy)
                         self.score.print_results()
-                    if enemy.type == 2:
+                    elif enemy.type == 2:
                         self.enemies.remove(enemy)
                         for i in range(2):
                             self.score.print_results()
-                    if enemy.type == 1:
+                    else:
                         self.enemies.remove(enemy)
                         for i in range(3):
                             self.score.print_results()
