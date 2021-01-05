@@ -2,6 +2,7 @@ from PyQt5.QtCore import QBasicTimer, pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
 from Constants import *
+from Enemy.move_enemy import MoveEnemy
 from Life.Life import Life
 from Player.Player import Player
 from Bullet.Bullets import Bullet
@@ -15,12 +16,10 @@ class Game(QWidget):
 
     def __init__(self, parent=None):
         QWidget.__init__(self, parent=parent)
-        self.__init__ui()
         self.keys_pressed = set()
         self.player_timer = QBasicTimer()
-        self.enemy_timer = QBasicTimer()
-        self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
-        self.enemy_timer.start(FRAME_TIME_ENEMY_MS, self)
+        self.move_enemy = MoveEnemy()
+        self.__init__ui()
 
     def __init__ui(self):
         self.resize(SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -46,7 +45,12 @@ class Game(QWidget):
 
         # ADD SCORE
         self.score = Score(self)
+        self.start_game()
 
+    def start_game(self) -> None:
+        self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
+        self.move_enemy.move_signal.connect(self.enemy_game_update)
+        self.move_enemy.start()
 
     def closeEvent(self, event):
         self.closeGame.emit()
@@ -58,8 +62,6 @@ class Game(QWidget):
         self.keys_pressed.remove(event.key())
 
     def timerEvent(self, event):
-        if event.timerId() == self.enemy_timer.timerId():
-            self.enemy_game_update()
         self.game_update()
 
     def game_update(self):
@@ -79,21 +81,3 @@ class Game(QWidget):
         for enemy in self.enemies:
             enemy.game_update()
 
-    # def game_update(self):
-    #     self.player.game_update(self.keys_pressed)
-    #     for b in self.bullets:
-    #         b.game_update(self.keys_pressed, self.player)
-    #         shields = []
-    #
-    #         for shield in self.shields:
-    #             shield.check_if_shield_is_hit(b)
-    #             if not shield.check_if_shield_is_destroyed():
-    #                 shields.append(shield)
-    #             else:
-    #                 self.removeItem(shield)
-    #
-    #             for enemy in self.enemies:
-    #                 if (enemy.y() + enemy.pixmap().height()) > (shield.y()-10):
-    #                     self.enemy_timer.stop()
-    #         self.shields = shields
-    #
