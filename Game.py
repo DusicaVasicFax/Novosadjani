@@ -46,7 +46,7 @@ class Game(QWidget):
             self.lives.append(Life(i, self))
 
         # ENEMY_BULLETS
-        self.enemy_bullets = []
+        self.enemy_bullets = {}  # dictionary
 
         # ADD SCORE
         self.score = Score(self)
@@ -54,12 +54,6 @@ class Game(QWidget):
 
     def start_game(self) -> None:
         self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
-        # num = choice([*range(0, len(self.enemies), 1)])
-        #
-        # self.enemies[0].bullet = Bullet(50, 50, self, True)
-        # self.enemies[0].bullet.active = True
-        # self.enemies[0].bullet.enemy_game_update(self.enemies[0])
-        # print('test')
         self.move_enemy.move_signal.connect(self.enemy_game_update)
         self.move_enemy.start()
 
@@ -87,17 +81,40 @@ class Game(QWidget):
             for shield in self.shields:
                 if shield.check_if_shield_is_destroyed(bullet):
                     self.shields.remove(shield)
+        test_items = []
 
-        for enemy in self.enemies:
-            if enemy.bullet and enemy.bullet.enemy_game_update(enemy):
-                self.enemy_bullets.remove(enemy.bullet)
-                enemy.bullet = None
+        for key in [key for (key, value) in self.enemy_bullets.items() if
+                    value.enemy_game_update(self.enemies[key])]:
+            try:
+                # TODO check out this for some reason it is throwing index error
+                del self.enemy_bullets[key]
+            except IndexError:
+                test_items.append(key)
 
     def enemy_game_update(self):
+        # TODO leveling system:
+        """ 1. Increment level when all enemies are cleared
+            2. Dependent on a level choose a random number between zero and level number
+            3. For range in random number choose another random number until
+
+            randomNumber = choice([*range(0, currentLevel,1])
+            for i in randomNumber:
+                num = 0
+                do:
+                   num = choice([*range(0, len(self.enemies), 1)])
+                while(num not in self.enemy_bullets)
+                self.enemy_bullets[num] = Bullet(0, 0, self, True)
+        """
+        if not self.enemies:
+            # TODO This is the next level logic
+            print('GAME OVER, YOU WON')
+            self.player_timer.stop()
+            return
+
         if not self.enemy_bullets:
             num = choice([*range(0, len(self.enemies), 1)])
-            self.enemies[num].bullet = Bullet(50, 50, self, True)
-            self.enemy_bullets.append(self.enemies[num].bullet)
+            # self.enemies[num].bullet = Bullet(50, 50, self, True)
+            self.enemy_bullets[num] = Bullet(50, 50, self, True)
 
         for enemy in self.enemies:
             enemy.game_update()
