@@ -16,7 +16,7 @@ class Shield(QLabel):
         self.health = 6
 
     def calculate_start_position_x(self, x) -> int:
-        return SCREEN_WIDTH - 100 - (x * 535) - self.pixmap().width()
+        return SCREEN_WIDTH - 80 - (x * 380) - self.pixmap().width()
 
     def calculate_start_position_y(self) -> int:
         return SCREEN_HEIGHT - self.pixmap().height() - 70

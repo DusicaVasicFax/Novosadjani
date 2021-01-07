@@ -34,12 +34,12 @@ class Game(QWidget):
         self.bullets = [Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y, self)]
 
         self.shields = []
-        for i in range(3):
+        for i in range(4):
             self.shields.append(Shield(i, self))
 
         self.enemies = []
         for j in range(5):
-            for i in range(10):
+            for i in range(11):
                 self.enemies.append(Enemy(i, j, self))
 
         self.lives = []
@@ -72,6 +72,7 @@ class Game(QWidget):
         self.game_update()
 
     def game_update(self):
+
         self.player.game_update(self.keys_pressed)
         for bullet in self.bullets:
             bullet.player_game_update(self.keys_pressed, self.player)
@@ -84,19 +85,20 @@ class Game(QWidget):
                 if shield.check_if_shield_is_destroyed(bullet):
                     self.shields.remove(shield)
 
-        test_items = []
-        for key in [key for (key, value) in self.enemy_bullets.items() if
-                    value.enemy_game_update(self.enemies[key])]:
-            try:
-                # TODO check out this for some reason it is throwing index error
-                del self.enemy_bullets[key]
-            except IndexError:
-                #Ovo smo mozda i resili sa ovim s obzirom da mi je stojao breakpoint na levelu 5 i nista se nije desilo
-                test_items.append(key)
+        keys_to_be_removed = []
+        for key, value in self.enemy_bullets.items():
+            enemy = self.enemies[key] if key < len(self.enemies) else None
+            if value.enemy_game_update(enemy):
+                keys_to_be_removed.append(key)
+
+        for item in keys_to_be_removed:
+            self.enemy_bullets.pop(item)
+
         for bullet in self.enemy_bullets.values():
             for shield in self.shields:
                 if shield.check_if_shield_is_destroyed(bullet):
                     self.shields.remove(shield)
+
             for life in self.lives:
                 if self.player.check_if_player_is_hit(bullet):
                     if not self.player.life == 0:
@@ -134,19 +136,13 @@ class Game(QWidget):
             random_bullet_number_to_be_spawned = choice([*range(0, self.level, 1)]) if self.level > 1 else 1
             for i in range(random_bullet_number_to_be_spawned):
                 num = -1
-                # Kada je 0 ne udje mi u while petlju uopste, samim tim mi ostaje num -1 a u pythonu ti to znaci 1 elemenat sa kraja niza znaci 50-ti enemy uvek puca pa mora sa ifom
-                if not self.enemy_bullets.keys():
+                if len(self.enemy_bullets) == 0:
                     num = choice([*range(0, len(self.enemies), 1)])
-                #Vrti se u while petlji da se ne bi desilo da jedan enemy puca dva puta (struktura nam ne dozvoljava po sebi(dictionary key))
-                while num in self.enemy_bullets.keys():
-                    num = choice([*range(0, len(self.enemies), 1)])
-                self.enemy_bullets[num] = Bullet(50, 50, self, True)
+                else:
+                    while num in self.enemy_bullets.keys() or num == -1:
+                        num = choice([*range(0, len(self.enemies), 1)])
 
-        # Ovo sam ostavio tu
-        # if not self.enemy_bullets:
-        #     num = choice([*range(0, len(self.enemies), 1)])
-        #     # self.enemies[num].bullet = Bullet(50, 50, self, True)
-        #     self.enemy_bullets[num] = Bullet(50, 50, self, True)
+                self.enemy_bullets[num] = Bullet(50, 50, self, True)
 
         for enemy in self.enemies:
             enemy.game_update()
