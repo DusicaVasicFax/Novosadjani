@@ -39,7 +39,7 @@ class Enemy(QLabel):
     def game_update(self):
 
         self.change_image()
-        if self.moves == 25:
+        if self.moves == 18:
             self.change_direction()
             self.inc_moves()
 
@@ -47,7 +47,7 @@ class Enemy(QLabel):
             self.move_down()
             self.change_direction(True)
 
-        if self.moves > 50:
+        if self.moves > 42:
             self.moves = 0
 
         if self.direction == 1:
@@ -98,7 +98,7 @@ class Enemy(QLabel):
         elif self.type == 2:
             self.setGeometry(self.x(), self.y() + self.height() + 10, self.width(), self.height())
         else:
-            self.setGeometry(self.x(), self.y() + self.height() + 15, self.width(), self.height())
+            self.setGeometry(self.x(), self.y() + self.height() -5, self.width(), self.height())
 
     def change_direction(self, down=False) -> None:
         if down:
