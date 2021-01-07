@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QLabel
 
@@ -10,7 +11,7 @@ class Shield(QLabel):
         self.setPixmap(QPixmap("images/shield/shield.png"))
         self.setGeometry(self.calculate_start_position_x(i), self.calculate_start_position_y(), self.pixmap().width(),
                          self.pixmap().height())
-        # self.setStyleSheet("border: 1px solid white;")
+        self.setStyleSheet("border: 1px solid white;")
         self.active = True,
         self.health = 6
 
@@ -21,11 +22,17 @@ class Shield(QLabel):
         return SCREEN_HEIGHT - self.pixmap().height() - 70
 
     def check_if_shield_is_destroyed(self, bullet) -> bool:
-        x_coordinate_in_range = (self.x() <= bullet.x() <= self.x() + self.width()) or \
-                                (self.x() <= bullet.x() + bullet.width() <= self.x() + self.width())
-        y_coordinate_in_range = (self.y() <= bullet.y() <= self.y() + self.height()) or \
-                                (self.y() <= bullet.y() + bullet.height() <=
-                                 self.y() + self.height())
+        x = self.x()
+        x1 = self.x() + self.width()
+
+        x_coordinate_in_range = (x <= bullet.x() <= x1) or \
+                                (x <= bullet.x() + bullet.width() <= x1)
+
+        y = self.y()
+        y1 = self.y() + self.height()
+
+        y_coordinate_in_range = (y <= bullet.y() <= y1) or \
+                                (y <= bullet.y() + bullet.height() <= y1)
 
         hit = x_coordinate_in_range and y_coordinate_in_range
 

@@ -21,6 +21,7 @@ class Game(QWidget):
         self.keys_pressed = set()
         self.player_timer = QBasicTimer()
         self.move_enemy = MoveEnemy()
+        self.level = 1
         self.__init__ui()
 
     def __init__ui(self):
@@ -46,7 +47,7 @@ class Game(QWidget):
             self.lives.append(Life(i, self))
 
         # ENEMY_BULLETS
-        self.enemy_bullets = {}  # dictionary
+        self.enemy_bullets = {}
 
         # ADD SCORE
         self.score = Score(self)
@@ -81,15 +82,20 @@ class Game(QWidget):
             for shield in self.shields:
                 if shield.check_if_shield_is_destroyed(bullet):
                     self.shields.remove(shield)
-        test_items = []
 
+        test_items = []
         for key in [key for (key, value) in self.enemy_bullets.items() if
                     value.enemy_game_update(self.enemies[key])]:
             try:
                 # TODO check out this for some reason it is throwing index error
                 del self.enemy_bullets[key]
             except IndexError:
+                #Ovo smo mozda i resili sa ovim s obzirom da mi je stojao breakpoint na levelu 5 i nista se nije desilo
                 test_items.append(key)
+        for bullet in self.enemy_bullets.values():
+            for shield in self.shields:
+                if shield.check_if_shield_is_destroyed(bullet):
+                    self.shields.remove(shield)
 
     def enemy_game_update(self):
         # TODO leveling system:
@@ -105,16 +111,32 @@ class Game(QWidget):
                 while(num not in self.enemy_bullets)
                 self.enemy_bullets[num] = Bullet(0, 0, self, True)
         """
-        if not self.enemies:
-            # TODO This is the next level logic
-            print('GAME OVER, YOU WON')
-            self.player_timer.stop()
-            return
 
-        if not self.enemy_bullets:
-            num = choice([*range(0, len(self.enemies), 1)])
-            # self.enemies[num].bullet = Bullet(50, 50, self, True)
-            self.enemy_bullets[num] = Bullet(50, 50, self, True)
+        # if not self.enemies:
+        #     # TODO This is the next level logic
+        #     print('GAME OVER, YOU WON')
+        #     self.player_timer.stop()
+        #     self.level += 1
+        #     self.move_enemy.die()
+        #     return
+
+        if len(self.enemy_bullets) < self.level:
+            random_bullet_number_to_be_spawned = choice([*range(0, self.level, 1)]) if self.level > 1 else 1
+            for i in range(random_bullet_number_to_be_spawned):
+                num = -1
+                # Kada je 0 ne udje mi u while petlju uopste, samim tim mi ostaje num -1 a u pythonu ti to znaci 1 elemenat sa kraja niza znaci 50-ti enemy uvek puca pa mora sa ifom
+                if not self.enemy_bullets.keys():
+                    num = choice([*range(0, len(self.enemies), 1)])
+                #Vrti se u while petlji da se ne bi desilo da jedan enemy puca dva puta (struktura nam ne dozvoljava po sebi(dictionary key))
+                while num in self.enemy_bullets.keys():
+                    num = choice([*range(0, len(self.enemies), 1)])
+                self.enemy_bullets[num] = Bullet(50, 50, self, True)
+
+        # Ovo sam ostavio tu
+        # if not self.enemy_bullets:
+        #     num = choice([*range(0, len(self.enemies), 1)])
+        #     # self.enemies[num].bullet = Bullet(50, 50, self, True)
+        #     self.enemy_bullets[num] = Bullet(50, 50, self, True)
 
         for enemy in self.enemies:
             enemy.game_update()
