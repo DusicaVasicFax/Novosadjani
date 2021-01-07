@@ -21,7 +21,7 @@ class Game(QWidget):
         self.keys_pressed = set()
         self.player_timer = QBasicTimer()
         self.move_enemy = MoveEnemy()
-        self.level = 1
+        self.level = None
         self.__init__ui()
 
     def __init__ui(self):
@@ -54,6 +54,7 @@ class Game(QWidget):
         self.start_game()
 
     def start_game(self) -> None:
+        self.level = 5
         self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
         self.move_enemy.move_signal.connect(self.enemy_game_update)
         self.move_enemy.start()
@@ -96,6 +97,15 @@ class Game(QWidget):
             for shield in self.shields:
                 if shield.check_if_shield_is_destroyed(bullet):
                     self.shields.remove(shield)
+            for life in self.lives:
+                if self.player.check_if_player_is_hit(bullet):
+                    if not self.player.life == 0:
+                        life.close()
+                        self.lives.remove(life)
+                    else:
+                        life.close()
+                        self.lives.remove(life)
+                        self.player.close()
 
     def enemy_game_update(self):
         # TODO leveling system:

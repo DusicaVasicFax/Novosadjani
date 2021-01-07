@@ -11,7 +11,7 @@ class Shield(QLabel):
         self.setPixmap(QPixmap("images/shield/shield.png"))
         self.setGeometry(self.calculate_start_position_x(i), self.calculate_start_position_y(), self.pixmap().width(),
                          self.pixmap().height())
-        self.setStyleSheet("border: 1px solid white;")
+       # self.setStyleSheet("border: 1px solid white;")
         self.active = True,
         self.health = 6
 
