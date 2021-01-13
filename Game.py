@@ -20,6 +20,7 @@ class Game(QWidget):
         QWidget.__init__(self, parent=parent)
         self.keys_pressed = set()
         self.player_timer = QBasicTimer()
+        self.bullets_timer = QBasicTimer()
         self.move_enemy = MoveEnemy()
         self.level = None
         self.__init__ui()
@@ -56,6 +57,7 @@ class Game(QWidget):
     def start_game(self) -> None:
         self.level = 5
         self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
+        self.bullets_timer.start(FRAME_TIME_BULLETS_MS, self)
         self.move_enemy.move_signal.connect(self.enemy_game_update)
         self.move_enemy.start()
 
