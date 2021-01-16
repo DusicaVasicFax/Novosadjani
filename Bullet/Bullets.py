@@ -21,31 +21,31 @@ class Bullet(QLabel):
         self.show()
         self.enemy = enemy
 
-    def player_game_update(self, keys_pressed, player):
-        if not self.active:
-            if Qt.Key_Space in keys_pressed:
-                self.active = True
-                self.setGeometry(player.x() + player.width() / 2 - self.width() / 2,
-                                 player.y() - player.height() + self.offset_y,
-                                 self.pixmap().width(), self.pixmap().height())
-        else:
-            self.setGeometry(self.x(), self.y() - BULLET_SPEED, self.pixmap().width(), self.pixmap().height())
-            if self.y() + self.pixmap().height() <= 0:
-                self.hit()
+    def player_game_update(self) -> bool:
+        self.setGeometry(self.x(), self.y() - BULLET_SPEED, self.pixmap().width(), self.pixmap().height())
+        if self.y() + self.pixmap().height() <= 0:
+            self.active = False
+            self.close()
+            return True
+        return False
 
     def enemy_game_update(self, enemy) -> bool:
-        if not self.active:
-            x = enemy.x() + enemy.width() / 2 - self.width() / 2
-            y = enemy.y() + enemy.height()
-            self.setGeometry(x, y, self.pixmap().width(), self.pixmap().height())
-            self.active = True
-        else:
-            self.setGeometry(self.x(), self.y() + BULLET_SPEED, self.pixmap().width(), self.pixmap().height())
+        try:
+            if not self.active:
 
-            if self.y() >= SCREEN_HEIGHT:
-                self.hit()
-                return True
-            return False
+                x = enemy.x() + enemy.width() / 2 - self.width() / 2
+                y = enemy.y() + enemy.height()
+                self.setGeometry(x, y, self.pixmap().width(), self.pixmap().height())
+                self.active = True
+            else:
+                self.setGeometry(self.x(), self.y() + BULLET_SPEED, self.pixmap().width(), self.pixmap().height())
+
+                if self.y() >= SCREEN_HEIGHT:
+                    self.hit()
+                    return True
+                return False
+        except AttributeError:
+            return True
 
     def hit(self) -> None:
         self.active = False
