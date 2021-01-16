@@ -20,7 +20,6 @@ class Game(QWidget):
         QWidget.__init__(self, parent=parent)
         self.keys_pressed = set()
         self.player_timer = QBasicTimer()
-        self.bullets_timer = QBasicTimer()
         self.move_enemy = MoveEnemy()
         self.level = None
         self.__init__ui()
@@ -32,7 +31,7 @@ class Game(QWidget):
         self.player = Player(self)
 
         #   TODO maybe bullets should spawn when you press space?
-        self.bullets = [Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y, self)]
+        self.bullets = []
 
         self.shields = []
         for i in range(4):
@@ -57,7 +56,6 @@ class Game(QWidget):
     def start_game(self) -> None:
         self.level = 5
         self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
-        self.bullets_timer.start(FRAME_TIME_BULLETS_MS, self)
         self.move_enemy.move_signal.connect(self.enemy_game_update)
         self.move_enemy.start()
 
@@ -75,25 +73,35 @@ class Game(QWidget):
 
     def game_update(self):
 
-        self.player.game_update(self.keys_pressed)
+        bullet = self.player.game_update(self.keys_pressed, len(self.bullets), self.level)
+        if bullet:
+            self.bullets.append(bullet)
+
         for bullet in self.bullets:
-            bullet.player_game_update(self.keys_pressed, self.player)
+            if bullet.player_game_update():
+                self.bullets.remove(bullet)
+                break
+            should_continue = False
             for enemy in self.enemies:
                 if enemy.check_if_enemy_is_hit(bullet):
-                    self.score.print_results(0)
-                    if enemy.type == 3:
-                        self.enemies.remove(enemy)
-                        self.score.print_results(1)
-                    elif enemy.type == 2:
-                        self.enemies.remove(enemy)
-                        self.score.print_results(2)
-                    else:
-                        self.enemies.remove(enemy)
-                        self.score.print_results(3)
+                    self.enemies.remove(enemy)
+                    bullet.close()
+                    self.bullets.remove(bullet)
+                    self.score.print_results()
+                    should_continue = True
+            if should_continue:
+                continue
 
             for shield in self.shields:
-                if shield.check_if_shield_is_destroyed(bullet):
+                if shield.check_if_shield_is_hit(bullet):
+                    bullet.close()
+                    self.bullets.remove(bullet)
+                    should_continue = True
+
+                if shield.check_if_shield_is_destroyed():
                     self.shields.remove(shield)
+                if should_continue:
+                    break
 
         keys_to_be_removed = []
         for key, value in self.enemy_bullets.items():
@@ -106,7 +114,8 @@ class Game(QWidget):
 
         for bullet in self.enemy_bullets.values():
             for shield in self.shields:
-                if shield.check_if_shield_is_destroyed(bullet):
+                shield.check_if_shield_is_hit(bullet)
+                if shield.check_if_shield_is_destroyed():
                     self.shields.remove(shield)
 
             for life in self.lives:
@@ -118,6 +127,10 @@ class Game(QWidget):
                         life.close()
                         self.lives.remove(life)
                         self.player.close()
+
+    def move_enemy_update(self):
+        for enemy in self.enemies:
+            enemy.game_update()
 
     def enemy_game_update(self):
         # TODO leveling system:
@@ -134,13 +147,13 @@ class Game(QWidget):
                 self.enemy_bullets[num] = Bullet(0, 0, self, True)
         """
 
-        # if not self.enemies:
-        #     # TODO This is the next level logic
-        #     print('GAME OVER, YOU WON')
-        #     self.player_timer.stop()
-        #     self.level += 1
-        #     self.move_enemy.die()
-        #     return
+        if not self.enemies:
+            # TODO This is the next level logic
+            print('GAME OVER, YOU WON')
+            self.player_timer.stop()
+            self.level += 1
+            self.move_enemy.die()
+            return
 
         if len(self.enemy_bullets) < self.level:
             random_bullet_number_to_be_spawned = choice([*range(0, self.level, 1)]) if self.level > 1 else 1
@@ -154,5 +167,5 @@ class Game(QWidget):
 
                 self.enemy_bullets[num] = Bullet(50, 50, self, True)
 
-        for enemy in self.enemies:
-            enemy.game_update()
+        self.move_enemy_update()
+
