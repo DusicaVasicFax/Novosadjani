@@ -1,4 +1,3 @@
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QLabel
 
@@ -11,7 +10,7 @@ class Shield(QLabel):
         self.setPixmap(QPixmap("images/shield/shield.png"))
         self.setGeometry(self.calculate_start_position_x(i), self.calculate_start_position_y(), self.pixmap().width(),
                          self.pixmap().height())
-       # self.setStyleSheet("border: 1px solid white;")
+        # self.setStyleSheet("border: 1px solid white;")
         self.active = True,
         self.health = 6
 
@@ -21,7 +20,17 @@ class Shield(QLabel):
     def calculate_start_position_y(self) -> int:
         return SCREEN_HEIGHT - self.pixmap().height() - 70
 
-    def check_if_shield_is_destroyed(self, bullet) -> bool:
+    def check_if_shield_is_destroyed(self) -> bool:
+        if self.health == 4:
+            self.setPixmap(QPixmap("images/shield/shield_dmg.png"))
+        elif self.health == 2:
+            self.setPixmap(QPixmap("images/shield/shield_dmg_2.png"))
+        elif self.health <= 0:
+            self.close()
+            return True
+        return False
+
+    def check_if_shield_is_hit(self, bullet) -> bool:
         x = self.x()
         x1 = self.x() + self.width()
 
@@ -39,11 +48,5 @@ class Shield(QLabel):
         if hit:
             bullet.hit()
             self.health -= 1
-            if self.health == 4:
-                self.setPixmap(QPixmap("images/shield/shield_dmg.png"))
-            elif self.health == 2:
-                self.setPixmap(QPixmap("images/shield/shield_dmg_2.png"))
-            elif self.health <= 0:
-                self.close()
-                return True
+            return True
         return False
