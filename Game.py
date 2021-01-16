@@ -49,8 +49,8 @@ class Game(QWidget):
         # ENEMY_BULLETS
         self.enemy_bullets = {}
 
-        # ADD SCORE
-        self.score = Score(self)
+        # # ADD SCORE
+        # self.score = Score(self)
         self.start_game()
 
     def start_game(self) -> None:
@@ -84,11 +84,11 @@ class Game(QWidget):
             should_continue = False
             for enemy in self.enemies:
                 if enemy.check_if_enemy_is_hit(bullet):
-                    self.enemies.remove(enemy)
                     bullet.close()
                     self.bullets.remove(bullet)
-                    self.score.print_results()
+                    # self.score.print_results(enemy.type)
                     should_continue = True
+                    self.enemies.remove(enemy)
             if should_continue:
                 continue
 
