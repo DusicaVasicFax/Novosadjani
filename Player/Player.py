@@ -1,6 +1,8 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QLabel
+
+from Bullet.Bullets import Bullet
 from Constants import *
 
 
@@ -14,13 +16,22 @@ class Player(QLabel):
         self.show()
         self.life = lives
 
-    def game_update(self, keys_pressed):
+    def game_update(self, keys_pressed, bullets_length, level) -> Bullet:
         dx = self.x()
         if Qt.Key_Left in keys_pressed and self.x() - PLAYER_SPEED > 0:
             dx -= PLAYER_SPEED
         if Qt.Key_Right in keys_pressed and self.x() + PLAYER_SPEED < SCREEN_WIDTH - self.pixmap().width():
             dx += PLAYER_SPEED
         self.setGeometry(dx, self.y(), self.width(), self.height())
+
+        if Qt.Key_Space in keys_pressed and bullets_length < level:
+            bullet = Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y, self.parent())
+            bullet.active = True
+            bullet.setGeometry(self.x() + self.width() / 2 - bullet.width() / 2,
+                               self.y() - self.height() + bullet.offset_y,
+                               bullet.pixmap().width(), bullet.pixmap().height())
+            return bullet
+        return None
 
     def check_if_player_is_hit(self, bullet) -> bool:
         x = self.x()
