@@ -12,6 +12,6 @@ class Score(QLabel):
         self.setFont(QFont('Times', 12))
         self.setStyleSheet("color: orange")
 
-    # def print_results(self, i):
-    #     self.score += i
-    #     self.setText("Score: " + str(self.score))
+    def print_results(self, i):
+        self.score += i
+        self.setText("Score: " + str(self.score))

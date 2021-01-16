@@ -49,8 +49,8 @@ class Game(QWidget):
         # ENEMY_BULLETS
         self.enemy_bullets = {}
 
-        # # ADD SCORE
-        # self.score = Score(self)
+        # ADD SCORE
+        self.score = Score(self)
         self.start_game()
 
     def start_game(self) -> None:
@@ -72,6 +72,17 @@ class Game(QWidget):
         self.game_update()
 
     def game_update(self):
+        if len(self.enemies) == 0:
+            print('GAME OVER')
+            for bullet in self.enemy_bullets.values():
+                bullet.close()
+            for bullet in self.bullets:
+                bullet.close()
+            self.bullets.clear()
+            self.enemy_bullets.clear()
+            self.move_enemy.die()
+            self.player_timer.stop()
+            return
 
         bullet = self.player.game_update(self.keys_pressed, len(self.bullets), self.level)
         if bullet:
@@ -86,7 +97,7 @@ class Game(QWidget):
                 if enemy.check_if_enemy_is_hit(bullet):
                     bullet.close()
                     self.bullets.remove(bullet)
-                    # self.score.print_results(enemy.type)
+                    self.score.print_results(enemy.type)
                     should_continue = True
                     self.enemies.remove(enemy)
             if should_continue:
@@ -104,6 +115,7 @@ class Game(QWidget):
                     break
 
         keys_to_be_removed = []
+
         for key, value in self.enemy_bullets.items():
             enemy = self.enemies[key] if key < len(self.enemies) else None
             if value.enemy_game_update(enemy):
@@ -128,10 +140,6 @@ class Game(QWidget):
                         self.lives.remove(life)
                         self.player.close()
 
-    def move_enemy_update(self):
-        for enemy in self.enemies:
-            enemy.game_update()
-
     def enemy_game_update(self):
         # TODO leveling system:
         """ 1. Increment level when all enemies are cleared
@@ -148,24 +156,23 @@ class Game(QWidget):
         """
 
         if not self.enemies:
-            # TODO This is the next level logic
-            print('GAME OVER, YOU WON')
-            self.player_timer.stop()
-            self.level += 1
-            self.move_enemy.die()
             return
-
-        if len(self.enemy_bullets) < self.level:
-            random_bullet_number_to_be_spawned = choice([*range(0, self.level, 1)]) if self.level > 1 else 1
+        elif len(self.enemies) == 1:
+            if len(self.enemy_bullets) == 0:
+                self.enemy_bullets[0] = Bullet(50, 50, self, True)
+        elif len(self.enemy_bullets) - 1 < self.level:
+            x = self.level - len(self.enemy_bullets) - 1
+            random_bullet_number_to_be_spawned = choice([*range(0, x, 1)]) if self.level > 1 else 1
             for i in range(random_bullet_number_to_be_spawned):
                 num = -1
                 if len(self.enemy_bullets) == 0:
                     num = choice([*range(0, len(self.enemies), 1)])
+                elif len(self.enemies) == 1:
+                    self.enemy_bullets[0] = Bullet(50, 50, self, True)
                 else:
                     while num in self.enemy_bullets.keys() or num == -1:
-                        num = choice([*range(0, len(self.enemies), 1)])
-
+                        num = choice([*range(0, len(self.enemies) + 1, 1)])
                 self.enemy_bullets[num] = Bullet(50, 50, self, True)
 
-        self.move_enemy_update()
-
+        for enemy in self.enemies:
+            enemy.game_update()
