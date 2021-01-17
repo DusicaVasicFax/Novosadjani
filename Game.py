@@ -25,6 +25,7 @@ class Game(QWidget):
         self.move_enemy.move_signal.connect(self.enemy_game_update)
         self.move_player.key_pressed_signal.connect(self.player_move_update)
         self.level = 0
+        self.hard_quit = False
         self.__init__ui()
 
     def __init__ui(self):
@@ -63,7 +64,6 @@ class Game(QWidget):
         self.player.show()
 
         self.move_enemy.start()
-
         self.move_player.start()
 
     def keyPressEvent(self, event):
@@ -168,6 +168,7 @@ class Game(QWidget):
         self.move_enemy.die()
         self.player_timer.stop()
         self.move_player.die()
+        self.move_enemy.increment_speed()
         self.start_game()
 
     def you_lost(self):
@@ -185,6 +186,7 @@ class Game(QWidget):
         close = close.exec()
 
         if close == QMessageBox.No:
+            self.hard_quit = True
             self.close_game()
             self.close()
 
@@ -194,6 +196,7 @@ class Game(QWidget):
     def reset_game(self):
         self.level = 0
         self.player.reset_lives()
+        self.move_enemy.reset_speed()
         self.score.reset_score()
 
     def clear_screen(self):
@@ -214,17 +217,20 @@ class Game(QWidget):
         self.lives.clear()
 
     def closeEvent(self, event):
-        close = QMessageBox()
-        close.setWindowTitle("Are you sure you want to quit?")
-        close.setText("Are you sure you want to quit")
-        close.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        close.setDefaultButton(QMessageBox.Yes)
-        close = close.exec()
-
-        if close == QMessageBox.Yes:
+        if self.hard_quit:
             self.close_game()
         else:
-            event.ignore()
+            close = QMessageBox()
+            close.setWindowTitle("Are you sure you want to quit?")
+            close.setText("Are you sure you want to quit")
+            close.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            close.setDefaultButton(QMessageBox.Yes)
+            close = close.exec()
+
+            if close == QMessageBox.Yes:
+                self.close_game()
+            else:
+                event.ignore()
 
     def close_game(self):
         self.move_enemy.die()
