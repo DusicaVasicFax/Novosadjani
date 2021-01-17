@@ -27,8 +27,7 @@ class Enemy(QLabel):
         self.moves = 0
         self.direction = 1
         self.health = 1
-        self.bullet = None
-        # self.bullet = Bullet(5, 5, self)
+        self.show()
 
     def calculate_start_position_x(self, i) -> int:
         return (SCREEN_WIDTH - self.width()) / 5 + i * 90

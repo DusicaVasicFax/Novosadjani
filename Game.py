@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QBasicTimer, pyqtSignal
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QMessageBox
 
 from random import choice
 from Bullet.Bullets import Bullet
@@ -22,6 +22,8 @@ class Game(QWidget):
         self.player_timer = QBasicTimer()
         self.move_enemy = MoveEnemy()
         self.move_player = MovePlayer()
+        self.move_enemy.move_signal.connect(self.enemy_game_update)
+        self.move_player.key_pressed_signal.connect(self.player_move_update)
         self.level = 0
         self.__init__ui()
 
@@ -57,9 +59,11 @@ class Game(QWidget):
         self.level += 1
 
         self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
-        self.move_enemy.move_signal.connect(self.enemy_game_update)
+        self.player.life = 3
+        self.player.show()
+
         self.move_enemy.start()
-        self.move_player.key_pressed_signal.connect(self.player_move_update)
+
         self.move_player.start()
 
     def keyPressEvent(self, event):
@@ -138,8 +142,8 @@ class Game(QWidget):
             if len(self.enemy_bullets) == 0:
                 self.enemy_bullets[0] = Bullet(50, 50, self, True)
         elif len(self.enemy_bullets) - 1 < self.level:
-            x = self.level - len(self.enemy_bullets) - 1
-            random_bullet_number_to_be_spawned = choice([*range(0, x, 1)]) if self.level > 1 else 1
+            bullets_missing = self.level - len(self.enemy_bullets) - 1
+            random_bullet_number_to_be_spawned = choice([*range(0, bullets_missing, 1)]) if bullets_missing > 1 else 1
             for i in range(random_bullet_number_to_be_spawned):
                 num = -1
                 if len(self.enemy_bullets) == 0:
@@ -160,19 +164,39 @@ class Game(QWidget):
             self.bullets.append(bullet)
 
     def level_up(self):
-        print('LEVEL UP')
-        for bullet in self.enemy_bullets.values():
-            bullet.close()
-        for bullet in self.bullets:
-            bullet.close()
-        self.bullets.clear()
-        self.enemy_bullets.clear()
+        self.clear_screen()
         self.move_enemy.die()
         self.player_timer.stop()
         self.move_player.die()
+        self.start_game()
 
     def you_lost(self):
-        print(' YOU LOST')
+        self.clear_screen()
+        self.move_enemy.die()
+        self.move_player.die()
+        self.player_timer.stop()
+
+        close = QMessageBox()
+        close.setWindowTitle("You have lost")
+        close.setText(
+            "You have lost!. The current score is {}\nDo you want to play a new game?".format(self.score.score))
+        close.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        close.setDefaultButton(QMessageBox.Yes)
+        close = close.exec()
+
+        if close == QMessageBox.No:
+            self.close_game()
+            self.close()
+
+        self.reset_game()
+        self.start_game()
+
+    def reset_game(self):
+        self.level = 0
+        self.player.reset_lives()
+        self.score.reset_score()
+
+    def clear_screen(self):
         for bullet in self.enemy_bullets.values():
             bullet.close()
         self.enemy_bullets.clear()
@@ -185,12 +209,24 @@ class Game(QWidget):
         for shield in self.shields:
             shield.close()
         self.shields.clear()
-        # TODO popup for new game
-        self.move_enemy.die()
-        self.move_player.die()
-        self.player_timer.stop()
+        for life in self.lives:
+            life.close()
+        self.lives.clear()
 
     def closeEvent(self, event):
+        close = QMessageBox()
+        close.setWindowTitle("Are you sure you want to quit?")
+        close.setText("Are you sure you want to quit")
+        close.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        close.setDefaultButton(QMessageBox.Yes)
+        close = close.exec()
+
+        if close == QMessageBox.Yes:
+            self.close_game()
+        else:
+            event.ignore()
+
+    def close_game(self):
         self.move_enemy.die()
         self.move_player.die()
         self.closeGame.emit()

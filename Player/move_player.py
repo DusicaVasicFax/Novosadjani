@@ -14,6 +14,7 @@ class MovePlayer(QObject):
         self.thread.started.connect(self.__work__)
 
     def start(self) -> None:
+        self.is_done = False
         self.thread.start()
 
     def add_key_pressed(self, key) -> None:
@@ -24,6 +25,7 @@ class MovePlayer(QObject):
 
     def die(self) -> None:
         self.is_done = True
+        self.keys_pressed.clear()
         self.thread.quit()
 
     @pyqtSlot()

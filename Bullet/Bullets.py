@@ -19,7 +19,6 @@ class Bullet(QLabel):
         self.setGeometry(SCREEN_WIDTH, SCREEN_HEIGHT, self.pixmap().width(), self.pixmap().height())
         # self.setStyleSheet("border: 1px solid white;")
         self.show()
-        self.enemy = enemy
 
     def player_game_update(self) -> bool:
         self.setGeometry(self.x(), self.y() - BULLET_SPEED, self.pixmap().width(), self.pixmap().height())
