@@ -16,15 +16,15 @@ class Player(QLabel):
         self.show()
         self.life = lives
 
-    def game_update(self, keys_pressed, bullets_length, level) -> Bullet:
+    def game_update(self, key, bullets_length, level) -> Bullet:
         dx = self.x()
-        if Qt.Key_Left in keys_pressed and self.x() - PLAYER_SPEED > 0:
+        if Qt.Key_Left == key and self.x() - PLAYER_SPEED > 0:
             dx -= PLAYER_SPEED
-        if Qt.Key_Right in keys_pressed and self.x() + PLAYER_SPEED < SCREEN_WIDTH - self.pixmap().width():
+            self.setGeometry(dx, self.y(), self.width(), self.height())
+        elif Qt.Key_Right == key and self.x() + PLAYER_SPEED < SCREEN_WIDTH - self.pixmap().width():
             dx += PLAYER_SPEED
-        self.setGeometry(dx, self.y(), self.width(), self.height())
-
-        if Qt.Key_Space in keys_pressed and bullets_length < level:
+            self.setGeometry(dx, self.y(), self.width(), self.height())
+        elif Qt.Key_Space == key and bullets_length < level:
             bullet = Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y, self.parent())
             bullet.active = True
             bullet.setGeometry(self.x() + self.width() / 2 - bullet.width() / 2,

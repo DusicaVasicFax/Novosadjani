@@ -1,7 +1,6 @@
 from PyQt5.QtCore import QBasicTimer, pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
-from random import seed
 from random import choice
 from Bullet.Bullets import Bullet
 from Constants import *
@@ -9,6 +8,7 @@ from Enemy.Enemy import Enemy
 from Enemy.move_enemy import MoveEnemy
 from Life.Life import Life
 from Player.Player import Player
+from Player.move_player import MovePlayer
 from Score.Score import Score
 from Shield.Shield import Shield
 
@@ -21,7 +21,8 @@ class Game(QWidget):
         self.keys_pressed = set()
         self.player_timer = QBasicTimer()
         self.move_enemy = MoveEnemy()
-        self.level = None
+        self.move_player = MovePlayer()
+        self.level = 0
         self.__init__ui()
 
     def __init__ui(self):
@@ -29,22 +30,13 @@ class Game(QWidget):
         self.setStyleSheet("background-color: black;")
 
         self.player = Player(self)
-
-        #   TODO maybe bullets should spawn when you press space?
         self.bullets = []
 
         self.shields = []
-        for i in range(4):
-            self.shields.append(Shield(i, self))
 
         self.enemies = []
-        for j in range(5):
-            for i in range(11):
-                self.enemies.append(Enemy(i, j, self))
 
         self.lives = []
-        for i in range(3):
-            self.lives.append(Life(i, self))
 
         # ENEMY_BULLETS
         self.enemy_bullets = {}
@@ -54,39 +46,38 @@ class Game(QWidget):
         self.start_game()
 
     def start_game(self) -> None:
-        self.level = 5
+        for i in range(4):
+            self.shields.append(Shield(i, self))
+        for j in range(5):
+            for i in range(11):
+                self.enemies.append(Enemy(i, j, self))
+        for i in range(3):
+            self.lives.append(Life(i, self))
+
+        self.level += 1
+
         self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
         self.move_enemy.move_signal.connect(self.enemy_game_update)
         self.move_enemy.start()
-
-    def closeEvent(self, event):
-        self.closeGame.emit()
+        self.move_player.key_pressed_signal.connect(self.player_move_update)
+        self.move_player.start()
 
     def keyPressEvent(self, event):
-        self.keys_pressed.add(event.key())
+        self.move_player.add_key_pressed(event.key())
 
     def keyReleaseEvent(self, event):
-        self.keys_pressed.remove(event.key())
+        self.move_player.remove_key_pressed(event.key())
 
     def timerEvent(self, event):
         self.game_update()
 
     def game_update(self):
         if len(self.enemies) == 0:
-            print('GAME OVER')
-            for bullet in self.enemy_bullets.values():
-                bullet.close()
-            for bullet in self.bullets:
-                bullet.close()
-            self.bullets.clear()
-            self.enemy_bullets.clear()
-            self.move_enemy.die()
-            self.player_timer.stop()
+            self.level_up()
             return
-
-        bullet = self.player.game_update(self.keys_pressed, len(self.bullets), self.level)
-        if bullet:
-            self.bullets.append(bullet)
+        if self.player.life == 0:
+            self.you_lost()
+            return
 
         for bullet in self.bullets:
             if bullet.player_game_update():
@@ -141,20 +132,6 @@ class Game(QWidget):
                         self.player.close()
 
     def enemy_game_update(self):
-        # TODO leveling system:
-        """ 1. Increment level when all enemies are cleared
-            2. Dependent on a level choose a random number between zero and level number
-            3. For range in random number choose another random number until
-
-            randomNumber = choice([*range(0, currentLevel,1])
-            for i in randomNumber:
-                num = 0
-                do:
-                   num = choice([*range(0, len(self.enemies), 1)])
-                while(num not in self.enemy_bullets)
-                self.enemy_bullets[num] = Bullet(0, 0, self, True)
-        """
-
         if not self.enemies:
             return
         elif len(self.enemies) == 1:
@@ -176,3 +153,44 @@ class Game(QWidget):
 
         for enemy in self.enemies:
             enemy.game_update()
+
+    def player_move_update(self, key):
+        bullet = self.player.game_update(key, len(self.bullets), self.level)
+        if bullet:
+            self.bullets.append(bullet)
+
+    def level_up(self):
+        print('LEVEL UP')
+        for bullet in self.enemy_bullets.values():
+            bullet.close()
+        for bullet in self.bullets:
+            bullet.close()
+        self.bullets.clear()
+        self.enemy_bullets.clear()
+        self.move_enemy.die()
+        self.player_timer.stop()
+        self.move_player.die()
+
+    def you_lost(self):
+        print(' YOU LOST')
+        for bullet in self.enemy_bullets.values():
+            bullet.close()
+        self.enemy_bullets.clear()
+        for bullet in self.bullets:
+            bullet.close()
+        self.bullets.clear()
+        for enemy in self.enemies:
+            enemy.close()
+        self.enemies.clear()
+        for shield in self.shields:
+            shield.close()
+        self.shields.clear()
+        # TODO popup for new game
+        self.move_enemy.die()
+        self.move_player.die()
+        self.player_timer.stop()
+
+    def closeEvent(self, event):
+        self.move_enemy.die()
+        self.move_player.die()
+        self.closeGame.emit()
