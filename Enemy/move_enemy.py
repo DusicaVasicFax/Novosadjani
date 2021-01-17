@@ -9,18 +9,27 @@ class MoveEnemy(QObject):
         super().__init__()
         self.is_done = False
         self.thread = QThread()
+        self.speed = 0.50
         self.moveToThread(self.thread)
         self.thread.started.connect(self.__work__)
 
-    def start(self):
+    def start(self) -> None:
+        self.is_done = False
         self.thread.start()
 
-    def die(self):
+    def die(self) -> None:
         self.is_done = True
         self.thread.quit()
 
+    def increment_speed(self) -> None:
+        if self.speed - 0.2 > 0:
+            self.speed -= 0.2
+
+    def reset_speed(self) -> None:
+        self.speed = 0.50
+
     @pyqtSlot()
-    def __work__(self):
+    def __work__(self) -> None:
         while not self.is_done:
             self.move_signal.emit()
-            time.sleep(0.50)
+            time.sleep(self.speed)

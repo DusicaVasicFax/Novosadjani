@@ -10,6 +10,7 @@ class Life(QLabel):
         self.setPixmap(QPixmap("images/heart/heart.png"))
         self.setGeometry(self.calculate_start_position_x(i), self.calculate_start_position_y(), self.pixmap().width(),
                          self.pixmap().height())
+        self.show()
 
     def calculate_start_position_x(self, x) -> float:
         return SCREEN_WIDTH - 1240 - (x * 50) - self.pixmap().width()

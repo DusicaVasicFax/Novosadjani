@@ -13,6 +13,7 @@ class Shield(QLabel):
         # self.setStyleSheet("border: 1px solid white;")
         self.active = True,
         self.health = 6
+        self.show()
 
     def calculate_start_position_x(self, x) -> int:
         return SCREEN_WIDTH - 80 - (x * 380) - self.pixmap().width()

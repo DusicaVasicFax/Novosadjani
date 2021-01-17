@@ -13,10 +13,10 @@ class Player(QLabel):
         self.setGeometry((SCREEN_WIDTH - self.pixmap().width()) / 2, SCREEN_HEIGHT - self.pixmap().height(),
                          self.pixmap().width(), self.pixmap().height())
         # self.setStyleSheet("border: 1px solid white;")
-        self.show()
         self.life = lives
+        self.show()
 
-    def game_update(self, key, bullets_length, level) -> Bullet:
+    def game_update(self, key, bullets_length, level) -> Bullet or None:
         dx = self.x()
         if Qt.Key_Left == key and self.x() - PLAYER_SPEED > 0:
             dx -= PLAYER_SPEED
@@ -27,7 +27,7 @@ class Player(QLabel):
         elif Qt.Key_Space == key and bullets_length < level:
             bullet = Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y, self.parent())
             bullet.active = True
-            bullet.setGeometry(self.x() + self.width() / 2 - bullet.width() / 2,
+            bullet.setGeometry(int(self.x() + self.width() / 2 - bullet.width() / 2),
                                self.y() - self.height() + bullet.offset_y,
                                bullet.pixmap().width(), bullet.pixmap().height())
             return bullet
@@ -53,3 +53,6 @@ class Player(QLabel):
             self.life -= 1
             return True
         return False
+
+    def reset_lives(self):
+        self.life = 3

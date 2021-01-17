@@ -15,3 +15,7 @@ class Score(QLabel):
     def print_results(self, i):
         self.score += i
         self.setText("Score: " + str(self.score))
+
+    def reset_score(self):
+        self.score = 0
+        self.setText("Score: 0")
