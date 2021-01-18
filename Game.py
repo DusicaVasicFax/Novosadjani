@@ -67,10 +67,12 @@ class Game(QWidget):
         self.move_player.start()
 
     def keyPressEvent(self, event):
-        self.move_player.add_key_pressed(event.key())
+        if not self.move_player.is_done:
+            self.move_player.add_key_pressed(event.key())
 
     def keyReleaseEvent(self, event):
-        self.move_player.remove_key_pressed(event.key())
+        if not self.move_player.is_done:
+            self.move_player.remove_key_pressed(event.key())
 
     def timerEvent(self, event):
         self.game_update()
