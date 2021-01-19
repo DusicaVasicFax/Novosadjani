@@ -35,7 +35,7 @@ class Game(QWidget):
         self.player1 = Player(self, 1)
         self.player1_bullets = []
 
-        self.player2 = Player(self,2)
+        self.player2 = Player(self, 2)
         self.player2_bullets = []
 
         self.shields = []
@@ -57,7 +57,7 @@ class Game(QWidget):
         for i in range(4):
             self.shields.append(Shield(i, self))
         for j in range(5):
-            for i in range(11):
+            for i in range(1):
                 self.enemies.append(Enemy(i, j, self))
         for i in range(3):
             self.lives_player1.append(Life(i, self, 1))
@@ -85,8 +85,11 @@ class Game(QWidget):
         if len(self.enemies) == 0:
             self.level_up()
             return
-        if self.player1.life == 0 and self.player2.life == 0:
-            self.you_lost()
+        if self.player1.life == 0:
+            self.you_lost(1)
+            return
+        elif self.player2.life == 0:
+            self.you_lost(2)
             return
 
         self.bullet_game_update(self.player1_bullets, self.score)
@@ -188,16 +191,18 @@ class Game(QWidget):
         self.move_enemy.increment_speed()
         self.start_game()
 
-    def you_lost(self):
+    def you_lost(self, player):
         self.clear_screen()
         self.move_enemy.die()
         self.move_player.die()
         self.player_timer.stop()
 
         close = QMessageBox()
-        close.setWindowTitle("You have lost")
+        close.setWindowTitle("Game over")
         close.setText(
-            "You have lost!. The current score is {}\nDo you want to play a new game?".format(self.score.score))
+            "Player" + str(
+                player) + " lost. The current score is Player1:{}, Player2:{}\nDo you want to play a new game?".format(
+                self.score.score, self.score2.score))
         close.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         close.setDefaultButton(QMessageBox.Yes)
         close = close.exec()
