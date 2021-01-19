@@ -7,9 +7,10 @@ from Constants import *
 
 
 class Player(QLabel):
-    def __init__(self, parent, lives=3):
+    def __init__(self, parent, player, lives=3):
         QLabel.__init__(self, parent)
         self.setPixmap(QPixmap("images/ship/ship.png"))
+        self.player = player
         self.setGeometry((SCREEN_WIDTH - self.pixmap().width()) / 2, SCREEN_HEIGHT - self.pixmap().height(),
                          self.pixmap().width(), self.pixmap().height())
         # self.setStyleSheet("border: 1px solid white;")
@@ -18,20 +19,37 @@ class Player(QLabel):
 
     def game_update(self, key, bullets_length, level) -> Bullet or None:
         dx = self.x()
-        if Qt.Key_Left == key and self.x() - PLAYER_SPEED > 0:
-            dx -= PLAYER_SPEED
-            self.setGeometry(dx, self.y(), self.width(), self.height())
-        elif Qt.Key_Right == key and self.x() + PLAYER_SPEED < SCREEN_WIDTH - self.pixmap().width():
-            dx += PLAYER_SPEED
-            self.setGeometry(dx, self.y(), self.width(), self.height())
-        elif Qt.Key_Space == key and bullets_length < level:
-            bullet = Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y, self.parent())
-            bullet.active = True
-            bullet.setGeometry(int(self.x() + self.width() / 2 - bullet.width() / 2),
-                               self.y() - self.height() + bullet.offset_y,
-                               bullet.pixmap().width(), bullet.pixmap().height())
-            return bullet
-        return None
+
+        if self.player == 1:
+            if Qt.Key_Left == key and self.x() - PLAYER_SPEED > 0:
+                dx -= PLAYER_SPEED
+                self.setGeometry(dx, self.y(), self.width(), self.height())
+            elif Qt.Key_Right == key and self.x() + PLAYER_SPEED < SCREEN_WIDTH - self.pixmap().width():
+                dx += PLAYER_SPEED
+                self.setGeometry(dx, self.y(), self.width(), self.height())
+            elif Qt.Key_Space == key and bullets_length < level:
+                bullet = Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y, self.parent())
+                bullet.active = True
+                bullet.setGeometry(int(self.x() + self.width() / 2 - bullet.width() / 2),
+                                   self.y() - self.height() + bullet.offset_y,
+                                   bullet.pixmap().width(), bullet.pixmap().height())
+                return bullet
+            return None
+        elif self.player == 2:
+            if Qt.Key_A == key and self.x() - PLAYER_SPEED > 0:
+                dx -= PLAYER_SPEED
+                self.setGeometry(dx, self.y(), self.width(), self.height())
+            elif Qt.Key_D == key and self.x() + PLAYER_SPEED < SCREEN_WIDTH - self.pixmap().width():
+                dx += PLAYER_SPEED
+                self.setGeometry(dx, self.y(), self.width(), self.height())
+            elif Qt.Key_S == key and bullets_length < level:
+                bullet = Bullet(PLAYER_BULLET_X_OFFSETS[0], PLAYER_BULLET_Y, self.parent())
+                bullet.active = True
+                bullet.setGeometry(int(self.x() + self.width() / 2 - bullet.width() / 2),
+                                   self.y() - self.height() + bullet.offset_y,
+                                   bullet.pixmap().width(), bullet.pixmap().height())
+                return bullet
+            return None
 
     def check_if_player_is_hit(self, bullet) -> bool:
         x = self.x()
