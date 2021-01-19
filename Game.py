@@ -57,7 +57,7 @@ class Game(QWidget):
         for i in range(4):
             self.shields.append(Shield(i, self))
         for j in range(5):
-            for i in range(1):
+            for i in range(11):
                 self.enemies.append(Enemy(i, j, self))
         for i in range(3):
             self.lives_player1.append(Life(i, self, 1))
