@@ -18,10 +18,13 @@ class MovePlayer(QObject):
         self.thread.start()
 
     def add_key_pressed(self, key) -> None:
-        self.keys_pressed.append(key)
+       self.keys_pressed.append(key)
 
     def remove_key_pressed(self, key) -> None:
-        self.keys_pressed.remove(key)
+        try:
+            self.keys_pressed.remove(key)
+        except ValueError:
+            self.keys_pressed.clear()
 
     def die(self) -> None:
         self.is_done = True
