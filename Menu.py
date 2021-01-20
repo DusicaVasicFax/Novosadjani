@@ -37,14 +37,28 @@ class Menu(QMainWindow):
 
         # setting alignment of the head
         head.setAlignment(Qt.AlignCenter)
-        new_game = QPushButton("New game", self)
-        new_game.setStyleSheet(
+        player1_game = QPushButton("1 Player", self)
+        player1_game.setStyleSheet(
             'QPushButton''{''background-color : black; color: orange}')
-        new_game.setFont(QFont('Times', 14))
-        new_game.setGeometry(570, 250, 220, 100)
-        new_game.clicked.connect(self.on_new_game_clicked)
+        player1_game.setFont(QFont('Times', 14))
+        player1_game.setGeometry(570, 250, 220, 100)
+        player1_game.clicked.connect(self.player1_game_clicked)
 
-    def on_new_game_clicked(self):
+        # setting button for multiplayer
+        player2_game = QPushButton("2 Players", self)
+        player2_game.setStyleSheet(
+            'QPushButton''{''background-color : black; color: orange}')
+        player2_game.setFont(QFont('Times', 14))
+        player2_game.setGeometry(570, 400, 220, 100)
+        player2_game.clicked.connect(self.player2_game_clicked)
+
+    def player1_game_clicked(self):
+        self.hide()
+        self.game = Game()
+        self.game.closeGame.connect(self.show)
+        self.game.show()
+
+    def player2_game_clicked(self):
         self.hide()
         self.game = Game()
         self.game.closeGame.connect(self.show)
