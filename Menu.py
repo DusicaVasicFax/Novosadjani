@@ -45,12 +45,12 @@ class Menu(QMainWindow):
         new_game.clicked.connect(self.on_new_game_clicked)
 
         # setting button for multiplayer
-        new_game = QPushButton("2 Players", self)
-        new_game.setStyleSheet(
+        multiplayer_game = QPushButton("2 Players", self)
+        multiplayer_game.setStyleSheet(
             'QPushButton''{''background-color : black; color: orange}')
-        new_game.setFont(QFont('Times', 14))
-        new_game.setGeometry(570, 400, 220, 100)
-        new_game.clicked.connect(self.on_multiplayer_clicked)
+        multiplayer_game.setFont(QFont('Times', 14))
+        multiplayer_game.setGeometry(570, 400, 220, 100)
+        multiplayer_game.clicked.connect(self.on_multiplayer_clicked)
 
     def on_new_game_clicked(self):
         self.hide()
@@ -61,7 +61,7 @@ class Menu(QMainWindow):
     def on_multiplayer_clicked(self):
         self.hide()
         self.game = Game()
-        self.game.multiplayer_game()
+        # self.game.multiplayer_game()
         self.game.closeGame.connect(self.show)
         self.game.show()
 
