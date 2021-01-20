@@ -5,11 +5,16 @@ from Constants import *
 
 
 class Life(QLabel):
-    def __init__(self, i, parent):
+    def __init__(self, i, parent, player):
         QLabel.__init__(self, parent)
         self.setPixmap(QPixmap("images/heart/heart.png"))
-        self.setGeometry(self.calculate_start_position_x(i), self.calculate_start_position_y(), self.pixmap().width(),
-                         self.pixmap().height())
+        if player == 1:
+            self.setGeometry(self.calculate_start_position_x(i), self.calculate_start_position_y(), self.pixmap().width(),
+                             self.pixmap().height())
+        elif player == 2:
+            self.setGeometry(self.calculate_start_position_x(i)+150, self.calculate_start_position_y(),
+                             self.pixmap().width(),
+                             self.pixmap().height())
         self.show()
 
     def calculate_start_position_x(self, x) -> float:
