@@ -78,7 +78,7 @@ class Game(QWidget):
                 self.enemies.append(Enemy(i, j, self))
         for i in range(3):
             self.lives_player1.append(Life(i, self, 1))
-            # self.lives_player2.append(Life(i, self, 2))
+            self.lives_player2.append(Life(i, self, 2))
 
         self.level += 1
 

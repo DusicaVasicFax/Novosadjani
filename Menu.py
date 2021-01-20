@@ -61,7 +61,7 @@ class Menu(QMainWindow):
     def on_multiplayer_clicked(self):
         self.hide()
         self.game = Game()
-        # self.game.multiplayer_game()
+        self.game.multiplayer_game()
         self.game.closeGame.connect(self.show)
         self.game.show()
 
