@@ -19,7 +19,7 @@ class Shield(QLabel):
         return SCREEN_WIDTH - 80 - (x * 380) - self.pixmap().width()
 
     def calculate_start_position_y(self) -> int:
-        return SCREEN_HEIGHT - self.pixmap().height() - 70
+        return SCREEN_HEIGHT - self.pixmap().height() - 100
 
     def check_if_shield_is_destroyed(self) -> bool:
         if self.health == 4:
