@@ -10,9 +10,16 @@ class Player(QLabel):
     def __init__(self, parent, player, lives=3):
         QLabel.__init__(self, parent)
         self.setPixmap(QPixmap("images/ship/ship.png"))
+        if player == 1:
+            self.setGeometry(10, SCREEN_HEIGHT - self.pixmap().height() - 20,
+                             self.pixmap().width(), self.pixmap().height())
+            self.setPixmap(QPixmap("images/ship/ship.png"))
+        elif player == 2:
+            self.setGeometry(SCREEN_WIDTH - self.pixmap().width() - 10, SCREEN_HEIGHT - self.pixmap().height() - 20,
+                             self.pixmap().width(), self.pixmap().height())
+            self.setPixmap(QPixmap("images/ship/ship2.png"))
         self.player = player
-        self.setGeometry((SCREEN_WIDTH - self.pixmap().width()) / 2, SCREEN_HEIGHT - self.pixmap().height(),
-                         self.pixmap().width(), self.pixmap().height())
+
         # self.setStyleSheet("border: 1px solid white;")
         self.life = lives
         self.show()

@@ -33,7 +33,7 @@ class Enemy(QLabel):
         return (SCREEN_WIDTH - self.width()) / 5 + i * 90
 
     def calculate_start_position_y(self, j) -> int:
-        return ((j + 1) * self.height()) + 30 * j
+        return ((j + 1) * self.height() + 20) + 30 * j
 
     def game_update(self):
 

@@ -7,18 +7,19 @@ class Score(QLabel):
     def __init__(self, parent, player):
         QLabel.__init__(self, parent)
         self.score = 0
-        self.setText("Score "+str(player)+": 0")
+        self.setText("Score " + str(player) + ": 0")
         if player == 1:
-            self.setGeometry(SCREEN_WIDTH - 100, 10, 100, 20)
+            self.setGeometry(20, SCREEN_HEIGHT - 25, 100, 20)
         elif player == 2:
-            self.setGeometry(SCREEN_WIDTH - 100, 25, 100, 20)
+            self.setGeometry(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 25, 100, 20)
+
         self.player = player
         self.setFont(QFont('Times', 12))
         self.setStyleSheet("color: orange")
 
     def print_results(self, i):
         self.score += i
-        self.setText("Score "+str(self.player)+":" + str(self.score))
+        self.setText("Score " + str(self.player) + ":" + str(self.score))
 
     def reset_score(self):
         self.score = 0

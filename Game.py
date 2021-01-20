@@ -158,8 +158,8 @@ class Game(QWidget):
         elif len(self.enemies) == 1:
             if len(self.enemy_bullets) == 0:
                 self.enemy_bullets[0] = Bullet(50, 50, self, True)
-        elif self.level - len(self.enemy_bullets) - 1 > 0:
-            bullets_missing = self.level - len(self.enemy_bullets) - 1
+        elif self.level - len(self.enemy_bullets) > 0:
+            bullets_missing = self.level - len(self.enemy_bullets)
             random_bullet_number_to_be_spawned = choice([*range(0, bullets_missing, 1)]) if bullets_missing > 1 else 1
             for i in range(random_bullet_number_to_be_spawned):
                 num = -1
@@ -171,7 +171,7 @@ class Game(QWidget):
                 else:
                     tries = 5
                     while (num in self.enemy_bullets.keys() or num == -1) and tries > 0:
-                        num = choice([*range(0, len(self.enemies) + 1, 1)])
+                        num = choice([*range(0, len(self.enemies), 1)])
                         tries -= 1
                     if tries > 0:
                         self.enemy_bullets[num] = Bullet(50, 50, self, True)
