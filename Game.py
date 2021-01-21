@@ -49,23 +49,6 @@ class Game(QWidget):
 
         self.start_game()
 
-    def multiplayer_game(self):
-        for i in range(4):
-            self.shields.append(Shield(i, self))
-        for j in range(5):
-            for i in range(11):
-                self.enemies.append(Enemy(i, j, self))
-        for i in range(3):
-            self.lives_player1.append(Life(i, self, 1))
-            self.lives_player2.append(Life(i, self, 2))
-
-        self.level += 1
-
-        self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
-
-        self.move_enemy.start()
-        self.move_player.start()
-
     def start_game(self) -> None:
         for i in range(4):
             self.shields.append(Shield(i, self))
