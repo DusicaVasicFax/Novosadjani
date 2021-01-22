@@ -6,6 +6,7 @@ from Bullet.Bullets import Bullet
 from Constants import *
 from Enemy.Enemy import Enemy
 from Enemy.move_enemy import MoveEnemy
+from GameUpdate import GameUpdateThread, BulletUpdateThread, EnemyBulletUpdateThread
 from Life.Life import Life
 from Player.Player import Player
 from Player.move_player import MovePlayer
@@ -20,10 +21,20 @@ class Game(QWidget):
         QWidget.__init__(self, parent=parent)
         self.players_count = players_count
         self.keys_pressed = set()
-        self.player_timer = QBasicTimer()
+
+        self.game_update_thread = GameUpdateThread()
+        self.game_update_thread.game_update_signal.connect(self.game_update)
+
+        self.bullet_game_update_thread = BulletUpdateThread()
+        self.bullet_game_update_thread.bullet_update_signal.connect(self.bullet_game_update)
+
+        self.enemy_bullet_game_update_thread = EnemyBulletUpdateThread()
+        self.enemy_bullet_game_update_thread.enemy_bullet_update_signal.connect(self.enemy_bullet_game_update)
+
         self.move_enemy = MoveEnemy()
-        self.move_player = MovePlayer()
         self.move_enemy.move_signal.connect(self.enemy_game_update)
+
+        self.move_player = MovePlayer()
         self.move_player.key_pressed_signal.connect(self.player_move_update)
         self.level = 0
         self.hard_quit = False
@@ -61,9 +72,11 @@ class Game(QWidget):
                 self.lives[i].append(Life(j, self, i + 1))
 
         self.level += 1
-        self.player_timer.start(FRAME_TIME_PLAYER_MS, self)
         self.move_enemy.start()
         self.move_player.start()
+        self.game_update_thread.start()
+        self.bullet_game_update_thread.start()
+        self.enemy_bullet_game_update_thread.start()
 
     def keyPressEvent(self, event):
         if not self.move_player.is_done:
@@ -72,9 +85,6 @@ class Game(QWidget):
     def keyReleaseEvent(self, event):
         if not self.move_player.is_done:
             self.move_player.remove_key_pressed(event.key())
-
-    def timerEvent(self, event):
-        self.game_update()
 
     def game_update(self):
         if len(self.enemies) == 0:
@@ -86,9 +96,6 @@ class Game(QWidget):
                 self.you_lost(i + 1)
                 return
 
-        for i in range(self.players_count):
-            self.bullet_game_update(self.player_bullets[i], self.scores[i])
-
         keys_to_be_removed = []
         for key, value in self.enemy_bullets.items():
             enemy = self.enemies[key] if key < len(self.enemies) else None
@@ -98,52 +105,54 @@ class Game(QWidget):
         for item in keys_to_be_removed:
             self.enemy_bullets.pop(item)
 
+        # for i in range(self.players_count):
+        #     self.enemy_bullet_game_update(self.players[i], self.lives[i])
+
+    def enemy_bullet_game_update(self):
         for i in range(self.players_count):
-            self.enemy_bullet_game_update(self.players[i], self.lives[i])
+            for bullet in self.enemy_bullets.values():
+                for shield in self.shields:
+                    shield.check_if_shield_is_hit(bullet)
+                    if shield.check_if_shield_is_destroyed():
+                        self.shields.remove(shield)
 
-    def enemy_bullet_game_update(self, player, lives):
-        for bullet in self.enemy_bullets.values():
-            for shield in self.shields:
-                shield.check_if_shield_is_hit(bullet)
-                if shield.check_if_shield_is_destroyed():
-                    self.shields.remove(shield)
+                for life in self.lives[i]:
+                    if self.players[i].check_if_player_is_hit(bullet):
+                        if not self.lives[i] == 0:
+                            life.close()
+                            self.lives[i].remove(life)
+                        else:
+                            life.close()
+                            self.lives[i].remove(life)
+                            self.players[i].close()
 
-            for life in lives:
-                if player.check_if_player_is_hit(bullet):
-                    if not lives == 0:
-                        life.close()
-                        lives.remove(life)
-                    else:
-                        life.close()
-                        lives.remove(life)
-                        player.close()
-
-    def bullet_game_update(self, bullets, score):
-        for bullet in bullets:
-            if bullet.player_game_update():
-                bullets.remove(bullet)
-                continue
-            should_continue = False
-            for enemy in self.enemies:
-                if enemy.check_if_enemy_is_hit(bullet):
-                    bullet.close()
-                    bullets.remove(bullet)
-                    score.print_results(enemy.type)
-                    should_continue = True
-                    self.enemies.remove(enemy)
-            if should_continue:
-                continue
-
-            for shield in self.shields:
-                if shield.check_if_shield_is_hit(bullet):
-                    bullet.close()
-                    bullets.remove(bullet)
-                    should_continue = True
-
-                if shield.check_if_shield_is_destroyed():
-                    self.shields.remove(shield)
+    def bullet_game_update(self):
+        for i in range(self.players_count):
+            for bullet in self.player_bullets[i]:
+                if bullet.player_game_update():
+                    self.player_bullets[i].remove(bullet)
+                    continue
+                should_continue = False
+                for enemy in self.enemies:
+                    if enemy.check_if_enemy_is_hit(bullet):
+                        bullet.close()
+                        self.player_bullets[i].remove(bullet)
+                        self.scores[i].print_results(enemy.type)
+                        should_continue = True
+                        self.enemies.remove(enemy)
                 if should_continue:
                     continue
+
+                for shield in self.shields:
+                    if shield.check_if_shield_is_hit(bullet):
+                        bullet.close()
+                        self.player_bullets[i].remove(bullet)
+                        should_continue = True
+
+                    if shield.check_if_shield_is_destroyed():
+                        self.shields.remove(shield)
+                    if should_continue:
+                        continue
 
     def enemy_game_update(self):
         if not self.enemies:
@@ -179,18 +188,23 @@ class Game(QWidget):
                 self.player_bullets[i].append(bullet)
 
     def level_up(self):
-        self.clear_screen()
+        self.game_update_thread.die()
         self.move_enemy.die()
-        self.player_timer.stop()
         self.move_player.die()
+        self.bullet_game_update_thread.die()
+        self.enemy_bullet_game_update_thread.die()
+        self.clear_screen()
+
         self.move_enemy.increment_speed()
         self.start_game()
 
     def you_lost(self, player):
         self.clear_screen()
+        self.bullet_game_update_thread.die()
+        self.enemy_bullet_game_update_thread.die()
+        self.game_update_thread.die()
         self.move_enemy.die()
         self.move_player.die()
-        self.player_timer.stop()
 
         close = QMessageBox()
         close.setWindowTitle("Game over")
@@ -258,4 +272,7 @@ class Game(QWidget):
     def close_game(self):
         self.move_enemy.die()
         self.move_player.die()
+        self.bullet_game_update_thread.die()
+        self.enemy_bullet_game_update_thread.die()
+        self.game_update_thread.die()
         self.closeGame.emit()

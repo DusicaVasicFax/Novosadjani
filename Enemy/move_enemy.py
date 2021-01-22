@@ -22,8 +22,8 @@ class MoveEnemy(QObject):
         self.thread.quit()
 
     def increment_speed(self) -> None:
-        if self.speed - 0.2 > 0:
-            self.speed -= 0.2
+        if self.speed - 0.02 > 0:
+            self.speed -= 0.02
 
     def reset_speed(self) -> None:
         self.speed = 0.50
