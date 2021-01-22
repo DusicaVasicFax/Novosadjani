@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QBasicTimer, pyqtSignal
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QMessageBox
 
 from random import choice
