@@ -12,6 +12,7 @@ from Player.Player import Player
 from Player.move_player import MovePlayer
 from Score.Score import Score
 from Shield.Shield import Shield
+from DeusExMachina.DeusExMachina import DeusExMachina, calc, DeusThread
 
 
 class Game(QWidget):
@@ -30,6 +31,9 @@ class Game(QWidget):
 
         self.enemy_bullet_game_update_thread = EnemyBulletUpdateThread()
         self.enemy_bullet_game_update_thread.enemy_bullet_update_signal.connect(self.enemy_bullet_game_update)
+
+        self.deusThread = DeusThread()
+        self.deusThread.move.connect(self.initDeus)
 
         self.move_enemy = MoveEnemy()
         self.move_enemy.move_signal.connect(self.enemy_game_update)
@@ -51,6 +55,7 @@ class Game(QWidget):
         self.player_bullets = []
         self.enemy_bullets = {}
         self.scores = []
+        self.deusMachina = None
 
         for i in range(self.players_count):
             self.players.append(Player(self, i + 1, self.players_count))
@@ -72,11 +77,13 @@ class Game(QWidget):
                 self.lives[i].append(Life(j, self, i + 1))
 
         self.level += 1
+
         self.move_enemy.start()
         self.move_player.start()
         self.game_update_thread.start()
         self.bullet_game_update_thread.start()
         self.enemy_bullet_game_update_thread.start()
+        self.deusThread.start()
 
     def keyPressEvent(self, event):
         if not self.move_player.is_done:
@@ -125,6 +132,21 @@ class Game(QWidget):
                             life.close()
                             self.lives[i].remove(life)
                             self.players[i].close()
+
+    def initDeus(self, x):
+        if self.deusMachina is None:
+            self.deusMachina = DeusExMachina(x, self)
+            print("Deus")
+        else:
+            for i in range(self.players_count):
+                if self.deusMachina.is_hit(self.players[i]):
+                    self.deusMachina.close()
+                    self.deusMachina = None
+                    if self.players[i].life == 3:
+                        self.scores[i].print_delux()
+                    else:
+                        self.lives[i].insert(0, Life(abs(len(self.lives[i]) - 2), self, i + 1))
+                        self.players[i].life += 1
 
     def bullet_game_update(self):
         for i in range(self.players_count):
@@ -275,4 +297,5 @@ class Game(QWidget):
         self.bullet_game_update_thread.die()
         self.enemy_bullet_game_update_thread.die()
         self.game_update_thread.die()
+        # self.deusThread.die()
         self.closeGame.emit()
