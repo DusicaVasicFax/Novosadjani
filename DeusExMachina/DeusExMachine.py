@@ -1,18 +1,18 @@
 from random import randrange
 
 from PyQt5.QtCore import QThread, pyqtSignal, QObject, pyqtSlot
-from PyQt5.QtGui import QFont, QPixmap
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QLabel
 from time import sleep
 from Constants import *
-from multiprocessing import Process, Queue
+from multiprocessing import Queue, Process
 
 
-class DeusExMachina(QLabel):
+class DeusExMachine(QLabel):
     def __init__(self, x, parent):
         QLabel.__init__(self, parent)
         self.setPixmap(QPixmap("images/heart/heart.png"))
-        self.setGeometry(x, SCREEN_HEIGHT - 65, self.pixmap().width(), self.pixmap().height())
+        self.setGeometry(x, SCREEN_HEIGHT - self.pixmap().height() - 25, self.pixmap().width(), self.pixmap().height())
         self.show()
 
     def is_hit(self, player) -> bool:
@@ -36,39 +36,44 @@ class DeusExMachina(QLabel):
 
 
 class DeusThread(QObject):
-    move = pyqtSignal(int)
+    deus_signal = pyqtSignal(int)
 
     def __init__(self):
         super().__init__()
-        self.position = 0
-        self.show_self = False
+        self.show_generate = False
         self.thread = QThread()
         self.moveToThread(self.thread)
         self.thread.started.connect(self.run)
         self.is_done = False
+        self.should_generate = False
+        self.queue = Queue()
+        self.process = Process(target=generate_position, args=[self.queue])
 
     def start(self) -> None:
         self.is_done = False
         self.thread.start()
+        self.process.start()
+        # self.process.join()
 
     def die(self) -> None:
         self.is_done = True
         self.thread.quit()
+        if self.process.is_alive():
+            self.process.terminate()
 
     @pyqtSlot()
     def run(self):
         while not self.is_done:
-            if self.show_self:
-                self.move.emit(self.position)
-            q = Queue()
-            # self.thread.p = Process(target=calc, args=[q])
-            # self.thread.p.start()
-            # self.position = q.get()
-            print(str(self.position))
-            self.show_self = True
-            sleep(0.05)
+            if not self.queue.empty() and self.should_generate:
+                self.should_generate = False
+                self.deus_signal.emit(self.queue.get())
+            else:
+                self.deus_signal.emit(-1)
+            sleep(0.5)
 
 
-def calc(q):
-    value = randrange(0, 1300)
-    q.put(value)
+def generate_position(queue):
+    while True:
+        if queue.empty():
+            queue.put(randrange(0, SCREEN_WIDTH))
+        sleep(2)
