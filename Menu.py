@@ -75,10 +75,7 @@ class Menu(QMainWindow):
         self.game.show()
 
 
-def start():
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     menu = Menu()
     sys.exit(app.exec_())
-
-
-start()
