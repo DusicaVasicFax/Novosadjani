@@ -228,6 +228,7 @@ class Game(QWidget):
         self.clear_screen()
         self.level.level_up()
         self.move_enemy.increment_speed()
+        self.enemy_bullet_game_update_thread.increment_speed()
         self.start_game()
 
     def you_lost(self, player=None):
@@ -270,6 +271,7 @@ class Game(QWidget):
             self.players[i].reset_lives()
             self.scores[i].reset_score()
         self.move_enemy.reset_speed()
+        self.enemy_bullet_game_update_thread.reset_speed()
 
     def clear_screen(self):
         for bullet in self.enemy_bullets.values():

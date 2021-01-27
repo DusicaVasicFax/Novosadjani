@@ -6,7 +6,7 @@ from Constants import *
 class Level(QLabel):
     def __init__(self, parent):
         QLabel.__init__(self, parent)
-        self.level = 1
+        self.level = 4
         self.setGeometry((SCREEN_WIDTH - 80) / 2, 5, 80, 15)
         self.setFont(QFont('Times', 12))
         self.setStyleSheet("color: orange")
