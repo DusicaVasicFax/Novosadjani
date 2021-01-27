@@ -71,11 +71,11 @@ class DeusThread(QObject):
                 self.deus_signal.emit(self.queue.get())
             else:
                 self.deus_signal.emit(-1)
-            sleep(0.5)
+            sleep(0.05)
 
 
 def generate_position(queue):
     while True:
         if queue.empty():
-            queue.put(randrange(0, SCREEN_WIDTH))
+            queue.put(randrange(0, SCREEN_WIDTH-55))
         sleep(2)
