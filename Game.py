@@ -41,6 +41,7 @@ class Game(QWidget):
         self.move_player = MovePlayer()
         self.move_player.key_pressed_signal.connect(self.player_move_update)
         self.level = 0
+        self.random_number = -1
         self.hard_quit = False
         self.__init__ui()
 
@@ -192,8 +193,12 @@ class Game(QWidget):
 
     def init_deus(self, x):
         if self.level not in self.deus_machine.keys():
-            #   TODO DETERMINE IF THIS NEEDS TO BE SPAWNED ( nemam volje za zivotom)
-            self.deus_thread.should_generate = True  # TODO set this flag to true if you want to generate life
+            if self.random_number == -1:
+                self.random_number = choice([*range(0, 99, 1)])
+            else:
+                self.random_number -= 1
+            if self.random_number == 0:
+                self.deus_thread.should_generate = True
             if x != -1:
                 self.deus_machine[self.level] = DeusExMachine(x, self)
 
