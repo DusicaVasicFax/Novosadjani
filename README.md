@@ -61,8 +61,11 @@ PyQt5 biblioteka omogućava jednostavno kreiranje aplikacija sa grafičkim koris
 Prednosti PyQt5 okvira su to što omogućava jednostavno pisanje inače složenih grafičkih programa, i uz pomoć svojih biblioteka skriva od programera složenu implementaciju grafike.
 Mana PyQt5 može biti izgled samih grafičkih elemenata I to što pozicija istih zavisi isključivo od izvornog koda I zahteva razumevanje pozicioniranja na ekranu.
 
+### Nešto o paralelizaciji rada
 
-
+Python programski jezik u standradnoj biblioteci nudi podršku za više procesnu i više nitnu paralelizaciju rada. Pored ovoga nudi i sve potrebne dodatke (klase) koje su
+potrebne da bi omogućili sinhronizaciju i komunikaciju između niti i/ili procesa.
+Niti dele memorijski prostor dok ih procesi ne dele.
 
 
 
