@@ -9,9 +9,9 @@ class Score(QLabel):
         self.score = 0
         self.setText("Score " + str(player) + ": 0")
         if player == 1:
-            self.setGeometry(20, SCREEN_HEIGHT - 25, 100, 20)
+            self.setGeometry(20, SCREEN_HEIGHT - 25, 120, 20)
         elif player == 2:
-            self.setGeometry(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 25, 100, 20)
+            self.setGeometry(SCREEN_WIDTH - 120, SCREEN_HEIGHT - 25, 120, 20)
 
         self.player = player
         self.setFont(QFont('Times', 12))
