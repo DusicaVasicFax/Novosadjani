@@ -31,6 +31,41 @@ Ukoliko igrač ne pokupi DeusEx mašinu a pređe na novi nivo ista nestaje i poj
 Igrač dobija novi život ukoliko mu fali život a ukoliko ima sve živote dobija 15 poena.
 DeusEx mašina se nalazi u novoj niti koja pokreće i novi proces koji služi da generiše x koordinatu u određenom opsegu.
 
+### Workflow nepriljatelja
+
+Na početku igre (i posle na svakom novom nivou) nastaje 5x11 različitih nepriljatelja.
+Oni se pomeraju sa leve strane ekrana ka desnoj i obrnuto. Kada dođu do kraja ekrana pomere se za određenu vrednost na dole.
+Nepriljatelji nasumičo pucaju i mogu pucati metkove srazmerno broju nivoa.
+Na svakom novom nivou nepriljatelji se kreću brže kao i njihovi metkovi.
+Nepriljatelji se kreću i pucaju u posebnoj niti.
+
+
+### Workflow igre
+
+Igra počinje na prvom nivou i svaki igrač ima tri života.
+Igra se završava kada jedan od igrača izgubi sva tri života ili nepriljatelji dođu u nivo štitova ukoliko oni postoje a ukoliko ne postoje proverava se nivo igrača.
+
+
+### Nešto o pythonu
+
+Python je interpreterski jezik visokog nivoa apstrakcije, pa je zbog toga mnogo razumljivji i čitljiviji i ljudima koji se prvi put susreću sa njim, kao što smo i mi na ovom projektu. 
+Ovaj programski jezik ima drugačiju sintaksu od jezika sa kojima smo se do sada susretali pa je zbog toga trebalo malo vremena kako bi se navikli. 
+Programi koji su napisani u Pythonu su vrlo uredni i čitljivi što omogućava lako snalaženje u kodu.
+Python ima isti interpreter na većini operativnih sistema pa ga je zbog toga vrlo lako pokretati na različitim operativnim sistemima.
+Kod pythona jer nije tipiziran jezik IDE alati teže mogu predpostave šta korisnik želi da unese.
+
+### Nešto o pyqt5
+
+PyQt5 biblioteke su kreirane da povežu Python kao programski jezik i Qt aplikacijski okvir. 
+PyQt5 biblioteka omogućava jednostavno kreiranje aplikacija sa grafičkim korisničkim interfejsom. 
+Prednosti PyQt5 okvira su to što omogućava jednostavno pisanje inače složenih grafičkih programa, i uz pomoć svojih biblioteka skriva od programera složenu implementaciju grafike.
+Mana PyQt5 može biti izgled samih grafičkih elemenata I to što pozicija istih zavisi isključivo od izvornog koda I zahteva razumevanje pozicioniranja na ekranu.
+
+
+
+
+
+
 
 
 
