@@ -46,7 +46,7 @@ class DeusThread(QObject):
         self.is_done = False
         self.should_generate = False
         self.queue = Queue()
-        self.process = Process(target=generate_position, args=[self.queue])
+        self.process = Process(target=generate_position, args=(self.queue,))
 
     def start(self) -> None:
         self.is_done = False
@@ -75,5 +75,5 @@ class DeusThread(QObject):
 def generate_position(queue):
     while True:
         if queue.empty():
-            queue.put(randrange(0, SCREEN_WIDTH-55))
+            queue.put(randrange(0, SCREEN_WIDTH - 55))
         sleep(2)

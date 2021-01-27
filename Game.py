@@ -42,6 +42,7 @@ class Game(QWidget):
 
         self.move_player = MovePlayer()
         self.move_player.key_pressed_signal.connect(self.player_move_update)
+
         self.random_number = -1
         self.hard_quit = False
         self.__init__ui()
@@ -291,11 +292,13 @@ class Game(QWidget):
         for shield in self.shields:
             shield.close()
         self.shields.clear()
-
-        for deus in self.deus_machine.values():
+        delete_deus_keys = []
+        for key, deus in self.deus_machine.items():
             if deus is not None:
-                deus.close()
-                deus = None
+                delete_deus_keys.append(key)
+        for key in delete_deus_keys:
+            self.deus_machine[key].close()
+            self.deus_machine[key] = None
 
     def closeEvent(self, event):
         if self.hard_quit:
