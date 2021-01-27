@@ -51,9 +51,11 @@ class DeusThread(QObject):
 
     def start(self) -> None:
         self.is_done = False
+        self.should_generate = False
+        if not self.process.is_alive():
+            self.process.start()
         self.thread.start()
-        self.process.start()
-        # self.process.join()
+         # self.process.join()
 
     def die(self) -> None:
         self.is_done = True

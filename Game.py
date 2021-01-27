@@ -220,7 +220,7 @@ class Game(QWidget):
         self.move_player.die()
         self.bullet_game_update_thread.die()
         self.enemy_bullet_game_update_thread.die()
-        self.deus_thread.die()
+        #self.deus_thread.die()
         self.clear_screen()
 
         self.move_enemy.increment_speed()
