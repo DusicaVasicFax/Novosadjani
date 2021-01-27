@@ -208,7 +208,7 @@ class Game(QWidget):
                     self.deus_machine[self.level].close()
                     self.deus_machine[self.level] = None
                     if self.players[i].life == 3:
-                        self.scores[i].print_delux()
+                        self.scores[i].print_deluxe()
                     else:
                         self.lives[i].insert(0, Life(abs(len(self.lives[i]) - 2), self, i + 1))
                         self.players[i].life += 1

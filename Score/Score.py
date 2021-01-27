@@ -19,11 +19,11 @@ class Score(QLabel):
 
     def print_results(self, i):
         self.score += i
-        self.setText("Score " + str(self.player) + ":" + str(self.score))
+        self.setText("Score " + str(self.player) + ":" + str(self.score)+"  ")
 
-    def print_delux(self):
+    def print_deluxe(self):
         self.score += 15
-        self.setText("Score " + str(self.player) + ":" + str(self.score))
+        self.setText("Score " + str(self.player) + ":" + str(self.score)+"  ")
 
     def reset_score(self):
         self.score = 0
