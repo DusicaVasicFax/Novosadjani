@@ -11,6 +11,7 @@ class GameUpdateThread(QObject):
         self.thread = QThread()
         self.moveToThread(self.thread)
         self.thread.started.connect(self.__work__)
+        self.game_pause = False
 
     def start(self) -> None:
         self.is_done = False
@@ -23,7 +24,8 @@ class GameUpdateThread(QObject):
     @pyqtSlot()
     def __work__(self) -> None:
         while not self.is_done:
-            self.game_update_signal.emit()
+            if not self.game_pause:
+                self.game_update_signal.emit()
             time.sleep(0.05)
 
 
