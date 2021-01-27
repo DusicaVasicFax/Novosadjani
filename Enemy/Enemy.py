@@ -35,15 +35,15 @@ class Enemy(QLabel):
     def calculate_start_position_y(self, j) -> int:
         return ((j + 1) * self.height() + 20) + 30 * j
 
-    def game_update(self):
-
+    def game_update(self, player_y, shield_y=-1) -> bool:
+        ret_value = False
         self.change_image()
         if self.moves == 18:
             self.change_direction()
             self.inc_moves()
 
         if self.direction < 0:
-            self.move_down()
+            ret_value = self.move_down(player_y, shield_y)
             self.change_direction(True)
 
         if self.moves > 42:
@@ -53,6 +53,7 @@ class Enemy(QLabel):
             self.move_right()
         else:
             self.move_left()
+        return ret_value
 
     def change_image(self) -> None:
         if self.type == 1:
@@ -91,13 +92,20 @@ class Enemy(QLabel):
         self.setGeometry(self.x() - PLAYER_SPEED, self.y(), self.width(), self.height())
         self.inc_moves()
 
-    def move_down(self) -> None:
+    def move_down(self, player_y, shield_y) -> bool:
         if self.type == 1:
             self.setGeometry(self.x(), self.y() + self.height(), self.width(), self.height())
         elif self.type == 2:
             self.setGeometry(self.x(), self.y() + self.height() + 10, self.width(), self.height())
         else:
-            self.setGeometry(self.x(), self.y() + self.height() -5, self.width(), self.height())
+            self.setGeometry(self.x(), self.y() + self.height() - 5, self.width(), self.height())
+
+        if shield_y != -1:
+            if shield_y < self.y():
+                return True
+        elif player_y < self.y():
+            return True
+        return False
 
     def change_direction(self, down=False) -> None:
         if down:

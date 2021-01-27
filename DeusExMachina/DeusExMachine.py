@@ -40,7 +40,6 @@ class DeusThread(QObject):
 
     def __init__(self):
         super().__init__()
-        self.show_generate = False
         self.thread = QThread()
         self.moveToThread(self.thread)
         self.thread.started.connect(self.run)
@@ -51,9 +50,10 @@ class DeusThread(QObject):
 
     def start(self) -> None:
         self.is_done = False
+        self.should_generate = False
+        if not self.process.is_alive():
+            self.process.start()
         self.thread.start()
-        self.process.start()
-        # self.process.join()
 
     def die(self) -> None:
         self.is_done = True
@@ -69,11 +69,11 @@ class DeusThread(QObject):
                 self.deus_signal.emit(self.queue.get())
             else:
                 self.deus_signal.emit(-1)
-            sleep(0.5)
+            sleep(0.05)
 
 
 def generate_position(queue):
     while True:
         if queue.empty():
-            queue.put(randrange(0, SCREEN_WIDTH))
+            queue.put(randrange(0, SCREEN_WIDTH-55))
         sleep(2)
