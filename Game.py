@@ -67,10 +67,6 @@ class Game(QWidget):
             self.player_bullets.append([])
             self.lives.append([])
 
-        for i in range(self.players_count):
-            for j in range(3):
-                self.lives[i].append(Life(j, self, i + 1))
-
         self.start_game()
 
     def start_threads(self) -> None:
@@ -87,7 +83,9 @@ class Game(QWidget):
         for j in range(5):
             for i in range(11):
                 self.enemies.append(Enemy(i, j, self))
-
+        for i in range(self.players_count):
+            for j in range(3):
+                self.lives[i].append(Life(j, self, i + 1))
         self.level.print_level()
 
     def keyPressEvent(self, event):
@@ -228,7 +226,7 @@ class Game(QWidget):
             self.deus_machine[key] = None
 
     def level_up(self):
-        self.clear_screen(True)
+        self.clear_screen()
         self.level.level_up()
         self.move_enemy.increment_speed()
         self.enemy_bullet_game_update_thread.increment_speed()
@@ -279,7 +277,7 @@ class Game(QWidget):
         self.move_enemy.reset_speed()
         self.enemy_bullet_game_update_thread.reset_speed()
 
-    def clear_screen(self, level_up = False):
+    def clear_screen(self):
         for bullet in self.enemy_bullets.values():
             bullet.close()
         self.enemy_bullets.clear()
@@ -287,10 +285,9 @@ class Game(QWidget):
             for bullet in self.player_bullets[i]:
                 bullet.close()
             self.player_bullets[i].clear()
-            if not level_up:
-                for life in self.lives[i]:
-                    life.close()
-                self.lives[i].clear()
+            for life in self.lives[i]:
+                life.close()
+            self.lives[i].clear()
 
         for enemy in self.enemies:
             enemy.close()
