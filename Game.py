@@ -273,6 +273,9 @@ class Game(QWidget):
         for i in range(self.players_count):
             self.players[i].reset_lives()
             self.scores[i].reset_score()
+        for i in range(self.players_count):
+            for j in range(3):
+                self.lives[i].append(Life(j, self, i + 1))
         self.move_enemy.reset_speed()
         self.enemy_bullet_game_update_thread.reset_speed()
 
